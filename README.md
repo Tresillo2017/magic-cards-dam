@@ -15,6 +15,15 @@ La aplicación debe contemplar, como mínimo, estos tipos:
 - Encantamiento
 - Artefacto
 
+Además, cada carta podrá incluir:
+- Supertipo **Legendario** (opcional)
+- Un **tipo secundario** (opcional) para combinaciones como:
+  - Artefacto Criatura
+  - Encantamiento Criatura
+  - Tierra Artefacto
+  - Tierra Criatura
+  - Tierra Encantamiento
+
 ### Atributos de carta (BD y app)
 Cada carta deberá poder almacenar:
 - Nombre
@@ -23,7 +32,9 @@ Cada carta deberá poder almacenar:
 - Texto de habilidad
 - Rareza
 - Edición
-- Tipo de carta
+- Tipo principal de carta
+- Tipo secundario (opcional)
+- Indicador de si la carta es Legendaria (opcional)
 
 ### Colores de maná
 Se utilizarán seis colores en el alcance del proyecto:
