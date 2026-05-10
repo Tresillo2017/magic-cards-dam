@@ -26,12 +26,13 @@ Cada carta deberá poder almacenar:
 - Tipo de carta
 
 ### Colores de maná
-Se utilizarán los cinco colores básicos de Magic:
+Se utilizarán seis colores en el alcance del proyecto:
 - Blanco
 - Azul
 - Negro
 - Rojo
 - Verde
+- Incoloro
 
 ### Reglas básicas a reflejar
 - El mazo se compone de cartas válidas registradas en la base de datos.
