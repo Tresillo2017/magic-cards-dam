@@ -50,7 +50,24 @@ docker compose up -d
 
 Levanta MySQL 8.4 en `localhost:3306` con la base de datos `magic_cards` ya creada.
 
-### Opción B — MySQL local
+### Opción B — XAMPP
+
+1. Descargar e instalar XAMPP desde https://www.apachefriends.org
+2. Abrir el **Panel de Control de XAMPP** y arrancar el módulo **MySQL**
+3. Abrir **phpMyAdmin** en `http://localhost/phpmyadmin`
+4. Crear la base de datos `magic_cards` (cotejamiento `utf8mb4_unicode_ci`)
+5. Seleccionar la base de datos → pestaña **SQL** → pegar y ejecutar el contenido de `sql/schema.sql`
+
+Ajustar `src/db.properties` con las credenciales por defecto de XAMPP:
+```properties
+db.url=jdbc:mysql://localhost:3306/magic_cards
+db.usuario=root
+db.contrasena=
+```
+
+> XAMPP usa el usuario `root` sin contraseña por defecto. Se recomienda establecer una en producción desde phpMyAdmin → Cuentas de usuario.
+
+### Opción C — MySQL local
 
 Ejecutar el script para crear las tablas:
 ```bash
