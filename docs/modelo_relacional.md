@@ -2,6 +2,9 @@
 
 Transformación del E/R al esquema relacional MySQL.
 
+> **Nota**: los bloques de esta sección son pseudocódigo descriptivo.
+> El SQL ejecutable completo se encuentra en [`sql/schema.sql`](../sql/schema.sql).
+
 ## Tablas
 
 ### tipo_carta

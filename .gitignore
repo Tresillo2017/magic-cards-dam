@@ -11,3 +11,4 @@ nbactions.xml
 nb-configuration.xml
 *.iml
 .DS_Store
+src/db.properties

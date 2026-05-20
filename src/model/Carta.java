@@ -4,7 +4,25 @@ import java.util.List;
 
 public class Carta {
 
-    public enum Rareza { COMUN, INFRECUENTE, RARA, MITICA }
+    public enum Rareza {
+        COMUN("Común"),
+        INFRECUENTE("Infrecuente"),
+        RARA("Rara"),
+        MITICA("Mítica");
+
+        private final String valorBD;
+
+        Rareza(String valorBD) { this.valorBD = valorBD; }
+
+        public String getValorBD() { return valorBD; }
+
+        public static Rareza desdeDB(String valor) {
+            for (Rareza r : values()) {
+                if (r.valorBD.equalsIgnoreCase(valor)) return r;
+            }
+            throw new IllegalArgumentException("Rareza desconocida: " + valor);
+        }
+    }
 
     private int idCarta;
     private String nombre;
