@@ -1,0 +1,23 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: magic_cards_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: EbHuYuWuA5EKvr21tEjuXZq
+      MYSQL_DATABASE: magic_cards
+      MYSQL_USER: magic_user
+      MYSQL_PASSWORD: EbHuYuWuA5EKvr21tEjuXZq
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "magic_user", "-pEbHuYuWuA5EKvr21tEjuXZq"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
