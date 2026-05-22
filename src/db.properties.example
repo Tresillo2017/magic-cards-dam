@@ -1,0 +1,4 @@
+# Copiar a db.properties y ajustar con tus credenciales
+db.url=jdbc:mysql://localhost:3306/magic_cards
+db.usuario=magic_user
+db.contrasena=CAMBIAR_ESTO

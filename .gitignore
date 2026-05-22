@@ -1,0 +1,14 @@
+out/
+build/
+dist/
+*.class
+*.jar
+lib/
+.idea/
+.netbeans/
+nbproject/private/
+nbactions.xml
+nb-configuration.xml
+*.iml
+.DS_Store
+src/db.properties
