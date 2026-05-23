@@ -243,7 +243,9 @@ public class MazoView extends JPanel {
         // Comprobar si la carta ya está en el mazo
         boolean yaExiste = false;
         for (int i = 0; i < modeloCartas.getRowCount(); i++) {
-            if ((int) modeloCartas.getValueAt(i, 0) == carta.getIdCarta()) {
+            Object val = modeloCartas.getValueAt(i, 0);
+            if (!(val instanceof Integer)) continue;
+            if ((int) val == carta.getIdCarta()) {
                 yaExiste = true;
                 // Actualizar cantidad
                 CartaMazo cm = new CartaMazo();
