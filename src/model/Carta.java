@@ -4,33 +4,13 @@ import java.util.List;
 
 public class Carta {
 
-    public enum Rareza {
-        COMUN("Común"),
-        INFRECUENTE("Infrecuente"),
-        RARA("Rara"),
-        MITICA("Mítica");
-
-        private final String valorBD;
-
-        Rareza(String valorBD) { this.valorBD = valorBD; }
-
-        public String getValorBD() { return valorBD; }
-
-        public static Rareza desdeDB(String valor) {
-            for (Rareza r : values()) {
-                if (r.valorBD.equalsIgnoreCase(valor)) return r;
-            }
-            throw new IllegalArgumentException("Rareza desconocida: " + valor);
-        }
-    }
-
     private int idCarta;
     private String nombre;
     private int costeMana;
     private Integer fuerza;
     private Integer resistencia;
     private String textoHabilidad;
-    private Rareza rareza;
+    private String rareza;
     private boolean legendario;
     private TipoCarta tipoCarta;
     private TipoCarta tipoSecundario;
@@ -57,8 +37,8 @@ public class Carta {
     public String getTextoHabilidad() { return textoHabilidad; }
     public void setTextoHabilidad(String textoHabilidad) { this.textoHabilidad = textoHabilidad; }
 
-    public Rareza getRareza() { return rareza; }
-    public void setRareza(Rareza rareza) { this.rareza = rareza; }
+    public String getRareza() { return rareza; }
+    public void setRareza(String rareza) { this.rareza = rareza; }
 
     public boolean isLegendario() { return legendario; }
     public void setLegendario(boolean legendario) { this.legendario = legendario; }
@@ -77,6 +57,6 @@ public class Carta {
 
     @Override
     public String toString() {
-        return nombre + " (" + (tipoCarta != null ? tipoCarta.getNombre() : "") + ")";
+        return nombre;
     }
 }
