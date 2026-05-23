@@ -11,7 +11,7 @@ import java.util.List;
  * Acceso a datos para la entidad Carta.
  * Proporciona operaciones CRUD y búsqueda sobre la tabla {@code carta}.
  */
-public class CartaDAO {
+public class CartaDAO implements DAO<Carta> {
 
     private Connection conexion;
 

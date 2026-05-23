@@ -11,7 +11,7 @@ import java.util.List;
  * Acceso a datos para la entidad Jugador.
  * Proporciona operaciones CRUD sobre la tabla {@code jugador}.
  */
-public class JugadorDAO {
+public class JugadorDAO implements DAO<Jugador> {
 
     private Connection conexion;
 
