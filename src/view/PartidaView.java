@@ -116,7 +116,7 @@ public class PartidaView extends JPanel {
     public void cargarTabla() {
         cargarCombos();
         modeloTabla.setRowCount(0);
-        List<Partida> lista = partidaDAO.listarTodas();
+        List<Partida> lista = partidaDAO.listarTodos();
         if (lista.isEmpty()) {
             modeloTabla.addRow(new Object[]{"-", "Sin partidas registradas", "", "", ""});
             lblEstado.setText("Sin partidas registradas.");
