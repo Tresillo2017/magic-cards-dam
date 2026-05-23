@@ -1,5 +1,7 @@
 package view;
 
+import util.ConexionDB;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -17,6 +19,7 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         setTitle("Magic Cards DAM");
         setSize(950, 620);
+        setMinimumSize(new Dimension(800, 500));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -73,11 +76,39 @@ public class MainFrame extends JFrame {
         menuBar.add(menuGestion);
 
         JMenu menuAyuda = new JMenu("Ayuda");
+        JMenuItem itemDocumentacion = new JMenuItem("Documentación (Wiki)");
+        itemDocumentacion.addActionListener(e -> {
+            try {
+                java.awt.Desktop.getDesktop().browse(new java.net.URI("https://github.com/Tresillo2017/magic-cards-dam/wiki"));
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                    "No se pudo abrir el navegador.\nVisita manualmente:\nhttps://github.com/Tresillo2017/magic-cards-dam/wiki",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        menuAyuda.add(itemDocumentacion);
+        menuAyuda.addSeparator();
         JMenuItem itemAcerca = new JMenuItem("Acerca de");
-        itemAcerca.addActionListener(e ->
-            JOptionPane.showMessageDialog(this,
-                "Magic Cards DAM\nPráctica Final - Programación y Bases de Datos",
-                "Acerca de", JOptionPane.INFORMATION_MESSAGE));
+        itemAcerca.addActionListener(e -> {
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+            panel.add(new JLabel("Magic Cards DAM"));
+            panel.add(new JLabel("Práctica Final — Programación y Bases de Datos"));
+            panel.add(Box.createVerticalStrut(8));
+            JLabel linkLabel = new JLabel("<html><a href=''>https://github.com/Tresillo2017/magic-cards-dam</a></html>");
+            linkLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            linkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    try {
+                        java.awt.Desktop.getDesktop().browse(new java.net.URI("https://github.com/Tresillo2017/magic-cards-dam"));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+            panel.add(linkLabel);
+            JOptionPane.showMessageDialog(this, panel, "Acerca de", JOptionPane.INFORMATION_MESSAGE);
+        });
         menuAyuda.add(itemAcerca);
         menuBar.add(menuAyuda);
 
@@ -95,6 +126,16 @@ public class MainFrame extends JFrame {
             // Si Nimbus no está disponible, se usa el L&F por defecto
         }
         SwingUtilities.invokeLater(() -> {
+            ConexionDB db = ConexionDB.getInstancia();
+            if (!db.isConectado()) {
+                JOptionPane.showMessageDialog(null,
+                    "No se pudo conectar a la base de datos.\n\n" +
+                    "Comprueba que MySQL está en ejecución y que\n" +
+                    "las credenciales en db.properties son correctas.\n\n" +
+                    "Error: " + db.getErrorConexion(),
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+            }
             MainFrame frame = new MainFrame();
             frame.setVisible(true);
         });

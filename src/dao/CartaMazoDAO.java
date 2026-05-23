@@ -7,6 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acceso a datos para la relación Carta-Mazo.
+ * Gestiona las operaciones sobre la tabla {@code carta_mazo}.
+ */
 public class CartaMazoDAO {
 
     private Connection conexion;
@@ -15,7 +19,8 @@ public class CartaMazoDAO {
         conexion = ConexionDB.getInstancia().getConexion();
     }
 
-    public void insertar(CartaMazo cm) {
+    /** Añade una carta a un mazo con la cantidad indicada. */
+    public boolean insertar(CartaMazo cm) {
         String sql = "INSERT INTO carta_mazo (id_mazo, id_carta, cantidad) VALUES (?, ?, ?)";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
@@ -24,11 +29,18 @@ public class CartaMazoDAO {
             ps.setInt(3, cm.getCantidad());
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
+    /**
+     * Devuelve todas las cartas de un mazo con sus datos completos.
+     * @param idMazo identificador del mazo
+     * @return lista de CartaMazo del mazo
+     */
     public List<CartaMazo> listarPorMazo(int idMazo) {
         List<CartaMazo> lista = new ArrayList<>();
         String sql = "SELECT cm.cantidad, c.id_carta, c.nombre, c.coste_mana, " +
@@ -79,7 +91,7 @@ public class CartaMazoDAO {
         return lista;
     }
 
-    public void actualizar(CartaMazo cm) {
+    public boolean actualizar(CartaMazo cm) {
         String sql = "UPDATE carta_mazo SET cantidad = ? WHERE id_mazo = ? AND id_carta = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
@@ -88,12 +100,14 @@ public class CartaMazoDAO {
             ps.setInt(3, cm.getCarta().getIdCarta());
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
-    public void eliminar(int idMazo, int idCarta) {
+    public boolean eliminar(int idMazo, int idCarta) {
         String sql = "DELETE FROM carta_mazo WHERE id_mazo = ? AND id_carta = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
@@ -101,20 +115,28 @@ public class CartaMazoDAO {
             ps.setInt(2, idCarta);
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
-    public void eliminarPorMazo(int idMazo) {
+    /**
+     * Elimina todas las cartas de un mazo. Se usa antes de borrar el mazo.
+     * @param idMazo identificador del mazo
+     */
+    public boolean eliminarPorMazo(int idMazo) {
         String sql = "DELETE FROM carta_mazo WHERE id_mazo = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setInt(1, idMazo);
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

@@ -7,6 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acceso a datos para la entidad Jugador.
+ * Proporciona operaciones CRUD sobre la tabla {@code jugador}.
+ */
 public class JugadorDAO {
 
     private Connection conexion;
@@ -15,7 +19,8 @@ public class JugadorDAO {
         conexion = ConexionDB.getInstancia().getConexion();
     }
 
-    public void insertar(Jugador j) {
+    /** Inserta un jugador y actualiza su {@code idJugador} con la clave generada. */
+    public boolean insertar(Jugador j) {
         String sql = "INSERT INTO jugador (nombre, email, fecha_registro) VALUES (?, ?, ?)";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -29,11 +34,18 @@ public class JugadorDAO {
             }
             rs.close();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
+    /**
+     * Obtiene un jugador por su ID.
+     * @param id identificador del jugador
+     * @return objeto Jugador o {@code null} si no existe
+     */
     public Jugador obtenerPorId(int id) {
         Jugador jugador = null;
         String sql = "SELECT id_jugador, nombre, email, fecha_registro FROM jugador WHERE id_jugador = ?";
@@ -56,6 +68,7 @@ public class JugadorDAO {
         return jugador;
     }
 
+    /** Devuelve todos los jugadores ordenados por nombre. */
     public List<Jugador> listarTodos() {
         List<Jugador> lista = new ArrayList<>();
         String sql = "SELECT id_jugador, nombre, email, fecha_registro FROM jugador ORDER BY nombre";
@@ -78,20 +91,7 @@ public class JugadorDAO {
         return lista;
     }
 
-    public void actualizar(Jugador j) {
-        String sql = "UPDATE jugador SET nombre = ?, email = ? WHERE id_jugador = ?";
-        try {
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ps.setString(1, j.getNombre());
-            ps.setString(2, j.getEmail());
-            ps.setInt(3, j.getIdJugador());
-            ps.executeUpdate();
-            ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
+    /** Devuelve todos los jugadores incluyendo el número de mazos que posee cada uno. */
     public List<Jugador> listarTodosConMazos() {
         List<Jugador> lista = new ArrayList<>();
         String sql = "SELECT j.id_jugador, j.nombre, j.email, j.fecha_registro, COUNT(m.id_mazo) AS num_mazos " +
@@ -117,15 +117,38 @@ public class JugadorDAO {
         return lista;
     }
 
-    public void eliminar(int id) {
+    /** Actualiza nombre y email del jugador. */
+    public boolean actualizar(Jugador j) {
+        String sql = "UPDATE jugador SET nombre = ?, email = ? WHERE id_jugador = ?";
+        try {
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ps.setString(1, j.getNombre());
+            ps.setString(2, j.getEmail());
+            ps.setInt(3, j.getIdJugador());
+            ps.executeUpdate();
+            ps.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Elimina el jugador con el ID indicado.
+     * @param id identificador del jugador
+     */
+    public boolean eliminar(int id) {
         String sql = "DELETE FROM jugador WHERE id_jugador = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setInt(1, id);
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

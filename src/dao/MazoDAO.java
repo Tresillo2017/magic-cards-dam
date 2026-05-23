@@ -8,6 +8,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acceso a datos para la entidad Mazo.
+ * Proporciona operaciones CRUD sobre la tabla {@code mazo}.
+ */
 public class MazoDAO {
 
     private Connection conexion;
@@ -16,7 +20,8 @@ public class MazoDAO {
         conexion = ConexionDB.getInstancia().getConexion();
     }
 
-    public void insertar(Mazo m) {
+    /** Inserta un mazo y actualiza su {@code idMazo} con la clave generada. */
+    public boolean insertar(Mazo m) {
         String sql = "INSERT INTO mazo (nombre, id_jugador) VALUES (?, ?)";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -29,11 +34,18 @@ public class MazoDAO {
             }
             rs.close();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
+    /**
+     * Obtiene un mazo por su ID incluyendo los datos del jugador propietario.
+     * @param id identificador del mazo
+     * @return objeto Mazo o {@code null} si no existe
+     */
     public Mazo obtenerPorId(int id) {
         Mazo mazo = null;
         String sql = "SELECT m.id_mazo, m.nombre, j.id_jugador, j.nombre AS nombre_jugador, " +
@@ -63,6 +75,7 @@ public class MazoDAO {
         return mazo;
     }
 
+    /** Devuelve todos los mazos con datos del jugador, ordenados por nombre. */
     public List<Mazo> listarTodos() {
         List<Mazo> lista = new ArrayList<>();
         String sql = "SELECT m.id_mazo, m.nombre, j.id_jugador, j.nombre AS nombre_jugador, " +
@@ -91,6 +104,11 @@ public class MazoDAO {
         return lista;
     }
 
+    /**
+     * Devuelve los mazos de un jugador concreto.
+     * @param idJugador identificador del jugador
+     * @return lista de mazos del jugador
+     */
     public List<Mazo> listarPorJugador(int idJugador) {
         List<Mazo> lista = new ArrayList<>();
         String sql = "SELECT m.id_mazo, m.nombre, j.id_jugador, j.nombre AS nombre_jugador, " +
@@ -121,7 +139,7 @@ public class MazoDAO {
         return lista;
     }
 
-    public void actualizar(Mazo m) {
+    public boolean actualizar(Mazo m) {
         String sql = "UPDATE mazo SET nombre = ?, id_jugador = ? WHERE id_mazo = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
@@ -130,20 +148,24 @@ public class MazoDAO {
             ps.setInt(3, m.getIdMazo());
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
-    public void eliminar(int id) {
+    public boolean eliminar(int id) {
         String sql = "DELETE FROM mazo WHERE id_mazo = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setInt(1, id);
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

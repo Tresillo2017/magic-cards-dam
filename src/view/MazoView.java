@@ -99,16 +99,15 @@ public class MazoView extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(6, 6, 6, 6);
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill   = GridBagConstraints.HORIZONTAL;
 
         txtNombreMazo = new JTextField(15);
         cboJugador    = new JComboBox<>();
 
-        gbc.gridx = 0; gbc.gridy = 0; panelForm.add(new JLabel("Nombre:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtNombreMazo, gbc);
+        gbc.gridx = 0; gbc.gridy = 0; gbc.fill = GridBagConstraints.NONE;       gbc.weightx = 0; panelForm.add(new JLabel("Nombre:"), gbc);
+        gbc.gridx = 1;                gbc.fill = GridBagConstraints.HORIZONTAL;  gbc.weightx = 1; panelForm.add(txtNombreMazo, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 1; panelForm.add(new JLabel("Jugador:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboJugador, gbc);
+        gbc.gridx = 0; gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE;       gbc.weightx = 0; panelForm.add(new JLabel("Jugador:"), gbc);
+        gbc.gridx = 1;                gbc.fill = GridBagConstraints.HORIZONTAL;  gbc.weightx = 1; panelForm.add(cboJugador, gbc);
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
         btnNuevo    = new JButton("Nuevo");
@@ -137,10 +136,13 @@ public class MazoView extends JPanel {
     }
 
     public void cargarTabla() {
-        // Recarga combos para reflejar jugadores/cartas creados en otras vistas
         cargarCombos();
         modeloMazos.setRowCount(0);
         List<Mazo> lista = mazoDAO.listarTodos();
+        if (lista.isEmpty()) {
+            modeloMazos.addRow(new Object[]{"-", "Sin mazos registrados", ""});
+            return;
+        }
         for (Mazo m : lista) {
             String jugador = m.getJugador() != null ? m.getJugador().getNombre() : "";
             modeloMazos.addRow(new Object[]{m.getIdMazo(), m.getNombre(), jugador});
@@ -167,6 +169,10 @@ public class MazoView extends JPanel {
         modeloCartas.setRowCount(0);
         if (idMazoSeleccionado == -1) return;
         List<CartaMazo> lista = cartaMazoDAO.listarPorMazo(idMazoSeleccionado);
+        if (lista.isEmpty()) {
+            modeloCartas.addRow(new Object[]{"-", "Mazo vacío — añade cartas abajo", "", ""});
+            return;
+        }
         for (CartaMazo cm : lista) {
             String tipo = cm.getCarta().getTipoCarta() != null ? cm.getCarta().getTipoCarta().getNombre() : "";
             modeloCartas.addRow(new Object[]{
@@ -187,13 +193,16 @@ public class MazoView extends JPanel {
         Mazo m = new Mazo();
         m.setNombre(txtNombreMazo.getText().trim());
         m.setJugador((Jugador) cboJugador.getSelectedItem());
+        boolean ok;
         if (idMazoSeleccionado == -1) {
-            mazoDAO.insertar(m);
-            JOptionPane.showMessageDialog(this, "Mazo creado correctamente.");
+            ok = mazoDAO.insertar(m);
+            if (ok) JOptionPane.showMessageDialog(this, "Mazo creado correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al crear el mazo.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             m.setIdMazo(idMazoSeleccionado);
-            mazoDAO.actualizar(m);
-            JOptionPane.showMessageDialog(this, "Mazo actualizado correctamente.");
+            ok = mazoDAO.actualizar(m);
+            if (ok) JOptionPane.showMessageDialog(this, "Mazo actualizado correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al actualizar el mazo.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         limpiarFormulario();
         cargarTabla();
@@ -208,8 +217,9 @@ public class MazoView extends JPanel {
                 "¿Seguro que quieres eliminar este mazo y todas sus cartas?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (opcion == JOptionPane.YES_OPTION) {
             cartaMazoDAO.eliminarPorMazo(idMazoSeleccionado);
-            mazoDAO.eliminar(idMazoSeleccionado);
-            JOptionPane.showMessageDialog(this, "Mazo eliminado.");
+            boolean ok = mazoDAO.eliminar(idMazoSeleccionado);
+            if (ok) JOptionPane.showMessageDialog(this, "Mazo eliminado.");
+            else JOptionPane.showMessageDialog(this, "Error al eliminar el mazo.", "Error", JOptionPane.ERROR_MESSAGE);
             limpiarFormulario();
             cargarTabla();
         }
@@ -253,7 +263,10 @@ public class MazoView extends JPanel {
             cm.setMazo(mazo);
             cm.setCarta(carta);
             cm.setCantidad(cantidad);
-            cartaMazoDAO.insertar(cm);
+            boolean ok = cartaMazoDAO.insertar(cm);
+            if (!ok) {
+                JOptionPane.showMessageDialog(this, "Error al añadir la carta al mazo.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
         cargarCartasMazo();
     }
@@ -281,9 +294,19 @@ public class MazoView extends JPanel {
         List<Jugador> jugadores = jugadorDAO.listarTodos();
         cboJugador.removeAllItems();
         for (Jugador j : jugadores) cboJugador.addItem(j);
+        if (jugadores.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "No hay jugadores registrados. Ve a la sección Jugadores para añadir uno.",
+                "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
 
         List<Carta> cartas = cartaDAO.listarTodos();
         cboCartaAnadir.removeAllItems();
         for (Carta c : cartas) cboCartaAnadir.addItem(c);
+        if (cartas.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "No hay cartas registradas. Ve a la sección Cartas para añadir una.",
+                "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
     }
 }

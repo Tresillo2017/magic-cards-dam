@@ -8,6 +8,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acceso a datos para la entidad Partida.
+ * Proporciona operaciones CRUD sobre la tabla {@code partida}.
+ */
 public class PartidaDAO {
 
     private Connection conexion;
@@ -16,7 +20,8 @@ public class PartidaDAO {
         conexion = ConexionDB.getInstancia().getConexion();
     }
 
-    public void insertar(Partida p) {
+    /** Inserta una nueva partida con la fecha actual y actualiza su {@code idPartida}. */
+    public boolean insertar(Partida p) {
         String sql = "INSERT INTO partida (fecha, id_jugador1, id_jugador2, id_ganador) VALUES (NOW(), ?, ?, ?)";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -31,8 +36,10 @@ public class PartidaDAO {
             }
             rs.close();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -173,7 +180,12 @@ public class PartidaDAO {
         return lista;
     }
 
-    public void registrarGanador(int idPartida, int idGanador) {
+    /**
+     * Asigna un ganador a una partida existente.
+     * @param idPartida  identificador de la partida
+     * @param idGanador  identificador del jugador ganador
+     */
+    public boolean registrarGanador(int idPartida, int idGanador) {
         String sql = "UPDATE partida SET id_ganador = ? WHERE id_partida = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
@@ -181,32 +193,42 @@ public class PartidaDAO {
             ps.setInt(2, idPartida);
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
-    public void quitarGanador(int idPartida) {
+    /**
+     * Pone el ganador de una partida a NULL (marca la partida como "en curso").
+     * @param idPartida identificador de la partida
+     */
+    public boolean quitarGanador(int idPartida) {
         String sql = "UPDATE partida SET id_ganador = NULL WHERE id_partida = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setInt(1, idPartida);
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
-    public void eliminar(int id) {
+    public boolean eliminar(int id) {
         String sql = "DELETE FROM partida WHERE id_partida = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setInt(1, id);
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

@@ -54,21 +54,20 @@ public class PartidaView extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(6, 6, 6, 6);
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         cboJugador1 = new JComboBox<>();
         cboJugador2 = new JComboBox<>();
         cboGanador  = new JComboBox<>();
 
         int fila = 0;
-        gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Jugador 1:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboJugador1, gbc);
+        gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;       gbc.weightx = 0; panelForm.add(new JLabel("Jugador 1:"), gbc);
+        gbc.gridx = 1;                   gbc.fill = GridBagConstraints.HORIZONTAL;  gbc.weightx = 1; panelForm.add(cboJugador1, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Jugador 2:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboJugador2, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;       gbc.weightx = 0; panelForm.add(new JLabel("Jugador 2:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL;  gbc.weightx = 1; panelForm.add(cboJugador2, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Ganador:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboGanador, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;       gbc.weightx = 0; panelForm.add(new JLabel("Ganador:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL;  gbc.weightx = 1; panelForm.add(cboGanador, gbc);
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
         btnNueva    = new JButton("Nueva");
@@ -96,6 +95,10 @@ public class PartidaView extends JPanel {
         cargarCombos();
         modeloTabla.setRowCount(0);
         List<Partida> lista = partidaDAO.listarTodas();
+        if (lista.isEmpty()) {
+            modeloTabla.addRow(new Object[]{"-", "Sin partidas registradas", "", "", ""});
+            return;
+        }
         for (Partida p : lista) {
             String j1      = p.getJugador1() != null ? p.getJugador1().getNombre() : "";
             String j2      = p.getJugador2() != null ? p.getJugador2().getNombre() : "";
@@ -126,20 +129,23 @@ public class PartidaView extends JPanel {
         Jugador ganador = (Jugador) cboGanador.getSelectedItem();
         boolean sinGanador = ganador == null || ganador.getIdJugador() == -1;
 
+        boolean ok;
         if (idPartidaSeleccionada == -1) {
             Partida p = new Partida();
             p.setJugador1(j1);
             p.setJugador2(j2);
             if (!sinGanador) p.setGanador(ganador);
-            partidaDAO.insertar(p);
-            JOptionPane.showMessageDialog(this, "Partida registrada correctamente.");
+            ok = partidaDAO.insertar(p);
+            if (ok) JOptionPane.showMessageDialog(this, "Partida registrada correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al registrar la partida.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             if (sinGanador) {
-                partidaDAO.quitarGanador(idPartidaSeleccionada);
+                ok = partidaDAO.quitarGanador(idPartidaSeleccionada);
             } else {
-                partidaDAO.registrarGanador(idPartidaSeleccionada, ganador.getIdJugador());
+                ok = partidaDAO.registrarGanador(idPartidaSeleccionada, ganador.getIdJugador());
             }
-            JOptionPane.showMessageDialog(this, "Partida actualizada correctamente.");
+            if (ok) JOptionPane.showMessageDialog(this, "Partida actualizada correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al actualizar la partida.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         limpiarFormulario();
         cargarTabla();
@@ -153,8 +159,9 @@ public class PartidaView extends JPanel {
         int opcion = JOptionPane.showConfirmDialog(this,
                 "¿Seguro que quieres eliminar esta partida?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (opcion == JOptionPane.YES_OPTION) {
-            partidaDAO.eliminar(idPartidaSeleccionada);
-            JOptionPane.showMessageDialog(this, "Partida eliminada.");
+            boolean ok = partidaDAO.eliminar(idPartidaSeleccionada);
+            if (ok) JOptionPane.showMessageDialog(this, "Partida eliminada.");
+            else JOptionPane.showMessageDialog(this, "Error al eliminar la partida.", "Error", JOptionPane.ERROR_MESSAGE);
             limpiarFormulario();
             cargarTabla();
         }
@@ -202,6 +209,11 @@ public class PartidaView extends JPanel {
             cboJugador1.addItem(j);
             cboJugador2.addItem(j);
             cboGanador.addItem(j);
+        }
+        if (jugadores.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "No hay jugadores registrados. Ve a la sección Jugadores para añadir uno.",
+                "Aviso", JOptionPane.WARNING_MESSAGE);
         }
     }
 

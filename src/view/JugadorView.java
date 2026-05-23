@@ -51,21 +51,20 @@ public class JugadorView extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(6, 6, 6, 6);
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         txtNombre = new JTextField(18);
         txtEmail  = new JTextField(18);
         lblFechaRegistro = new JLabel("-");
 
         int fila = 0;
-        gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Nombre:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtNombre, gbc);
+        gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;   gbc.weightx = 0; panelForm.add(new JLabel("Nombre:"), gbc);
+        gbc.gridx = 1;                   gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(txtNombre, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Email:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtEmail, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;   gbc.weightx = 0; panelForm.add(new JLabel("Email:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(txtEmail, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Fecha registro:"), gbc);
-        gbc.gridx = 1; panelForm.add(lblFechaRegistro, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;   gbc.weightx = 0; panelForm.add(new JLabel("Fecha registro:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(lblFechaRegistro, gbc);
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
         btnNuevo    = new JButton("Nuevo");
@@ -91,6 +90,10 @@ public class JugadorView extends JPanel {
     public void cargarTabla() {
         modeloTabla.setRowCount(0);
         List<Jugador> lista = jugadorDAO.listarTodosConMazos();
+        if (lista.isEmpty()) {
+            modeloTabla.addRow(new Object[]{"-", "Sin jugadores registrados", "", "", ""});
+            return;
+        }
         for (Jugador j : lista) {
             modeloTabla.addRow(new Object[]{
                 j.getIdJugador(), j.getNombre(), j.getEmail(),
@@ -116,13 +119,16 @@ public class JugadorView extends JPanel {
         j.setNombre(txtNombre.getText().trim());
         j.setEmail(txtEmail.getText().trim());
 
+        boolean ok;
         if (idJugadorSeleccionado == -1) {
-            jugadorDAO.insertar(j);
-            JOptionPane.showMessageDialog(this, "Jugador añadido correctamente.");
+            ok = jugadorDAO.insertar(j);
+            if (ok) JOptionPane.showMessageDialog(this, "Jugador añadido correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al añadir el jugador.\nEl email puede estar duplicado.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             j.setIdJugador(idJugadorSeleccionado);
-            jugadorDAO.actualizar(j);
-            JOptionPane.showMessageDialog(this, "Jugador actualizado correctamente.");
+            ok = jugadorDAO.actualizar(j);
+            if (ok) JOptionPane.showMessageDialog(this, "Jugador actualizado correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al actualizar el jugador.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         limpiarFormulario();
         cargarTabla();
@@ -136,8 +142,9 @@ public class JugadorView extends JPanel {
         int opcion = JOptionPane.showConfirmDialog(this,
                 "¿Seguro que quieres eliminar este jugador?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (opcion == JOptionPane.YES_OPTION) {
-            jugadorDAO.eliminar(idJugadorSeleccionado);
-            JOptionPane.showMessageDialog(this, "Jugador eliminado.");
+            boolean ok = jugadorDAO.eliminar(idJugadorSeleccionado);
+            if (ok) JOptionPane.showMessageDialog(this, "Jugador eliminado.");
+            else JOptionPane.showMessageDialog(this, "Error al eliminar el jugador.", "Error", JOptionPane.ERROR_MESSAGE);
             limpiarFormulario();
             cargarTabla();
         }

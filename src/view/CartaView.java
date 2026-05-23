@@ -70,7 +70,6 @@ public class CartaView extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(4, 4, 4, 4);
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         txtNombre = new JTextField(18);
         txtCosteMana = new JTextField(5);
@@ -85,34 +84,34 @@ public class CartaView extends JPanel {
         cboEdicion = new JComboBox<>();
 
         int fila = 0;
-        gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Nombre:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtNombre, gbc);
+        gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Nombre:"), gbc);
+        gbc.gridx = 1;                   gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(txtNombre, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Coste maná:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtCosteMana, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Coste maná:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(txtCosteMana, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Fuerza:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtFuerza, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Fuerza:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(txtFuerza, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Resistencia:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtResistencia, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Resistencia:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(txtResistencia, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Rareza:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboRareza, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Rareza:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(cboRareza, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Tipo:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboTipo, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Tipo:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(cboTipo, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Tipo secundario:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboTipoSec, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Tipo secundario:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(cboTipoSec, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Edición:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboEdicion, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Edición:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(cboEdicion, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Habilidad:"), gbc);
-        gbc.gridx = 1; panelForm.add(new JScrollPane(txtTextoHabilidad), gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Habilidad:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(new JScrollPane(txtTextoHabilidad), gbc);
 
-        fila++; gbc.gridx = 1; gbc.gridy = fila; panelForm.add(chkLegendario, gbc);
+        fila++; gbc.gridx = 1; gbc.gridy = fila;  gbc.fill = GridBagConstraints.NONE; gbc.weightx = 1; panelForm.add(chkLegendario, gbc);
 
         // Botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -154,6 +153,11 @@ public class CartaView extends JPanel {
                 cargarTabla();
             } else {
                 List<Carta> lista = cartaDAO.buscarPorNombre(nombre);
+                if (lista.isEmpty()) {
+                    JOptionPane.showMessageDialog(this,
+                        "No se encontraron cartas con el nombre \"" + nombre + "\".",
+                        "Sin resultados", JOptionPane.INFORMATION_MESSAGE);
+                }
                 cargarTablaConLista(lista);
             }
         });
@@ -173,6 +177,10 @@ public class CartaView extends JPanel {
 
     private void cargarTablaConLista(List<Carta> lista) {
         modeloTabla.setRowCount(0);
+        if (lista.isEmpty()) {
+            modeloTabla.addRow(new Object[]{"-", "Sin resultados", "", "", "", ""});
+            return;
+        }
         for (Carta c : lista) {
             String tipo = c.getTipoCarta() != null ? c.getTipoCarta().getNombre() : "";
             String edicion = c.getEdicion() != null ? c.getEdicion().getNombre() : "";
@@ -218,13 +226,16 @@ public class CartaView extends JPanel {
         if (tipoSec != null && tipoSec.getIdTipo() != -1) c.setTipoSecundario(tipoSec);
         c.setEdicion((Edicion) cboEdicion.getSelectedItem());
 
+        boolean ok;
         if (idCartaSeleccionada == -1) {
-            cartaDAO.insertar(c);
-            JOptionPane.showMessageDialog(this, "Carta añadida correctamente.");
+            ok = cartaDAO.insertar(c);
+            if (ok) JOptionPane.showMessageDialog(this, "Carta añadida correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al añadir la carta.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             c.setIdCarta(idCartaSeleccionada);
-            cartaDAO.actualizar(c);
-            JOptionPane.showMessageDialog(this, "Carta actualizada correctamente.");
+            ok = cartaDAO.actualizar(c);
+            if (ok) JOptionPane.showMessageDialog(this, "Carta actualizada correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al actualizar la carta.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         limpiarFormulario();
         cargarTabla();
@@ -238,8 +249,9 @@ public class CartaView extends JPanel {
         int opcion = JOptionPane.showConfirmDialog(this,
                 "¿Seguro que quieres eliminar esta carta?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (opcion == JOptionPane.YES_OPTION) {
-            cartaDAO.eliminar(idCartaSeleccionada);
-            JOptionPane.showMessageDialog(this, "Carta eliminada.");
+            boolean ok = cartaDAO.eliminar(idCartaSeleccionada);
+            if (ok) JOptionPane.showMessageDialog(this, "Carta eliminada.");
+            else JOptionPane.showMessageDialog(this, "Error al eliminar la carta.\nPuede estar en uso en algún mazo.", "Error", JOptionPane.ERROR_MESSAGE);
             limpiarFormulario();
             cargarTabla();
         }
@@ -318,9 +330,19 @@ public class CartaView extends JPanel {
             cboTipo.addItem(t);
             cboTipoSec.addItem(t);
         }
+        if (tipos.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "No hay tipos de carta en la base de datos.\nEjecuta sql/seed.sql para cargar los datos de prueba.",
+                "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
         List<Edicion> ediciones = edicionDAO.listarTodas();
         cboEdicion.removeAllItems();
         for (Edicion e : ediciones) cboEdicion.addItem(e);
+        if (ediciones.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "No hay ediciones en la base de datos.\nEjecuta sql/seed.sql para cargar los datos de prueba.",
+                "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     private void seleccionarEnCombo(JComboBox<TipoCarta> combo, int idTipo) {

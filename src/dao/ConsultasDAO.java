@@ -6,6 +6,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Ejecuta las consultas SQL avanzadas del Sprint 5.
+ * Incluye JOINs múltiples, GROUP BY, subconsultas, función y procedimiento almacenado.
+ */
 public class ConsultasDAO {
 
     private Connection conexion;
@@ -14,7 +18,7 @@ public class ConsultasDAO {
         conexion = ConexionDB.getInstancia().getConexion();
     }
 
-    // Consulta 1: cartas por tipo y color (JOIN múltiple)
+    /** Consulta 1: devuelve todas las cartas con su tipo y color mediante JOIN múltiple. */
     public List<String[]> cartasPorTipoYColor() {
         List<String[]> lista = new ArrayList<>();
         String sql = "SELECT c.nombre AS carta, t.nombre AS tipo, col.nombre AS color, c.rareza " +
@@ -42,7 +46,7 @@ public class ConsultasDAO {
         return lista;
     }
 
-    // Consulta 2: mazos con más cartas por jugador (GROUP BY + JOIN)
+    /** Consulta 2: mazos ordenados por total de cartas usando GROUP BY y JOIN. */
     public List<String[]> mazosConMasCartasPorJugador() {
         List<String[]> lista = new ArrayList<>();
         String sql = "SELECT j.nombre AS jugador, m.nombre AS mazo, " +
@@ -70,7 +74,7 @@ public class ConsultasDAO {
         return lista;
     }
 
-    // Consulta 3: jugadores con más victorias (GROUP BY)
+    /** Consulta 3: jugadores ordenados por número de victorias usando GROUP BY. */
     public List<String[]> jugadoresConMasVictorias() {
         List<String[]> lista = new ArrayList<>();
         String sql = "SELECT j.nombre AS jugador, COUNT(p.id_partida) AS victorias " +
@@ -95,7 +99,12 @@ public class ConsultasDAO {
         return lista;
     }
 
-    // Consulta 4: cartas de una edición con coste superior a la media (subconsulta)
+    /**
+     * Consulta 4: cartas de una edición cuyo coste de maná supera la media de esa edición.
+     * Usa subconsulta con AVG.
+     * @param idEdicion identificador de la edición a filtrar
+     * @return lista de filas {nombre, coste_mana, tipo, rareza}
+     */
     public List<String[]> cartasSobreMediaPorEdicion(int idEdicion) {
         List<String[]> lista = new ArrayList<>();
         String sql = "SELECT c.nombre, c.coste_mana, t.nombre AS tipo, c.rareza " +
@@ -125,7 +134,11 @@ public class ConsultasDAO {
         return lista;
     }
 
-    // Función SQL: coste total de maná de un mazo
+    /**
+     * Llama a la función SQL {@code coste_total_mazo} y devuelve el resultado.
+     * @param idMazo identificador del mazo
+     * @return coste total de maná del mazo
+     */
     public int costeTotalMazo(int idMazo) {
         int total = 0;
         String sql = "SELECT coste_total_mazo(?) AS total";
@@ -144,7 +157,13 @@ public class ConsultasDAO {
         return total;
     }
 
-    // Procedimiento almacenado: registrar partida
+    /**
+     * Llama al procedimiento almacenado {@code registrar_partida} mediante CallableStatement.
+     * @param idJugador1 primer jugador
+     * @param idJugador2 segundo jugador
+     * @param idGanador  ganador, o -1 si la partida está en curso
+     * @return ID de la partida creada, o -1 si hubo error
+     */
     public int registrarPartidaProcedimiento(int idJugador1, int idJugador2, int idGanador) {
         int idPartida = -1;
         String sql = "{CALL registrar_partida(?, ?, ?, ?)}";
