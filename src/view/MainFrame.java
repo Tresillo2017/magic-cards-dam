@@ -17,6 +17,7 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         setTitle("Magic Cards DAM");
         setSize(950, 620);
+        setMinimumSize(new Dimension(800, 500));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -74,10 +75,26 @@ public class MainFrame extends JFrame {
 
         JMenu menuAyuda = new JMenu("Ayuda");
         JMenuItem itemAcerca = new JMenuItem("Acerca de");
-        itemAcerca.addActionListener(e ->
-            JOptionPane.showMessageDialog(this,
-                "Magic Cards DAM\nPráctica Final - Programación y Bases de Datos",
-                "Acerca de", JOptionPane.INFORMATION_MESSAGE));
+        itemAcerca.addActionListener(e -> {
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+            panel.add(new JLabel("Magic Cards DAM"));
+            panel.add(new JLabel("Práctica Final — Programación y Bases de Datos"));
+            panel.add(Box.createVerticalStrut(8));
+            JLabel linkLabel = new JLabel("<html><a href=''>https://github.com/Tresillo2017/magic-cards-dam</a></html>");
+            linkLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            linkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    try {
+                        java.awt.Desktop.getDesktop().browse(new java.net.URI("https://github.com/Tresillo2017/magic-cards-dam"));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+            panel.add(linkLabel);
+            JOptionPane.showMessageDialog(this, panel, "Acerca de", JOptionPane.INFORMATION_MESSAGE);
+        });
         menuAyuda.add(itemAcerca);
         menuBar.add(menuAyuda);
 
