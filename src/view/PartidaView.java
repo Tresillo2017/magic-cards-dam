@@ -96,6 +96,10 @@ public class PartidaView extends JPanel {
         cargarCombos();
         modeloTabla.setRowCount(0);
         List<Partida> lista = partidaDAO.listarTodas();
+        if (lista.isEmpty()) {
+            modeloTabla.addRow(new Object[]{"-", "Sin partidas registradas", "", "", ""});
+            return;
+        }
         for (Partida p : lista) {
             String j1      = p.getJugador1() != null ? p.getJugador1().getNombre() : "";
             String j2      = p.getJugador2() != null ? p.getJugador2().getNombre() : "";
@@ -206,6 +210,11 @@ public class PartidaView extends JPanel {
             cboJugador1.addItem(j);
             cboJugador2.addItem(j);
             cboGanador.addItem(j);
+        }
+        if (jugadores.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "No hay jugadores registrados. Ve a la sección Jugadores para añadir uno.",
+                "Aviso", JOptionPane.WARNING_MESSAGE);
         }
     }
 

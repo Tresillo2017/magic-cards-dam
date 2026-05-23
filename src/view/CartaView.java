@@ -154,6 +154,11 @@ public class CartaView extends JPanel {
                 cargarTabla();
             } else {
                 List<Carta> lista = cartaDAO.buscarPorNombre(nombre);
+                if (lista.isEmpty()) {
+                    JOptionPane.showMessageDialog(this,
+                        "No se encontraron cartas con el nombre \"" + nombre + "\".",
+                        "Sin resultados", JOptionPane.INFORMATION_MESSAGE);
+                }
                 cargarTablaConLista(lista);
             }
         });
@@ -173,6 +178,10 @@ public class CartaView extends JPanel {
 
     private void cargarTablaConLista(List<Carta> lista) {
         modeloTabla.setRowCount(0);
+        if (lista.isEmpty()) {
+            modeloTabla.addRow(new Object[]{"-", "Sin resultados", "", "", "", ""});
+            return;
+        }
         for (Carta c : lista) {
             String tipo = c.getTipoCarta() != null ? c.getTipoCarta().getNombre() : "";
             String edicion = c.getEdicion() != null ? c.getEdicion().getNombre() : "";
@@ -322,9 +331,19 @@ public class CartaView extends JPanel {
             cboTipo.addItem(t);
             cboTipoSec.addItem(t);
         }
+        if (tipos.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "No hay tipos de carta en la base de datos.\nEjecuta sql/seed.sql para cargar los datos de prueba.",
+                "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
         List<Edicion> ediciones = edicionDAO.listarTodas();
         cboEdicion.removeAllItems();
         for (Edicion e : ediciones) cboEdicion.addItem(e);
+        if (ediciones.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "No hay ediciones en la base de datos.\nEjecuta sql/seed.sql para cargar los datos de prueba.",
+                "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     private void seleccionarEnCombo(JComboBox<TipoCarta> combo, int idTipo) {

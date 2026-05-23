@@ -123,7 +123,8 @@ public class ConsultasView extends JPanel {
         List<String[]> datos = consultasDAO.cartasPorTipoYColor();
         String[] cols = {"Carta", "Tipo", "Color", "Rareza"};
         mostrarResultados(cols, datos);
-        lblInfo.setText("Consulta 1 — " + datos.size() + " registros encontrados.");
+        if (datos.isEmpty()) lblInfo.setText("Consulta 1 — Sin resultados. Comprueba que hay cartas en la BD.");
+        else lblInfo.setText("Consulta 1 — " + datos.size() + " registros encontrados.");
     }
 
     // -------------------------------------------------------
@@ -133,7 +134,8 @@ public class ConsultasView extends JPanel {
         List<String[]> datos = consultasDAO.mazosConMasCartasPorJugador();
         String[] cols = {"Jugador", "Mazo", "Total cartas"};
         mostrarResultados(cols, datos);
-        lblInfo.setText("Consulta 2 — " + datos.size() + " mazos encontrados.");
+        if (datos.isEmpty()) lblInfo.setText("Consulta 2 — Sin resultados. No hay mazos con cartas asignadas.");
+        else lblInfo.setText("Consulta 2 — " + datos.size() + " mazos encontrados.");
     }
 
     // -------------------------------------------------------
@@ -143,7 +145,8 @@ public class ConsultasView extends JPanel {
         List<String[]> datos = consultasDAO.jugadoresConMasVictorias();
         String[] cols = {"Jugador", "Victorias"};
         mostrarResultados(cols, datos);
-        lblInfo.setText("Consulta 3 — " + datos.size() + " jugadores.");
+        if (datos.isEmpty()) lblInfo.setText("Consulta 3 — Sin jugadores registrados.");
+        else lblInfo.setText("Consulta 3 — " + datos.size() + " jugadores.");
     }
 
     // -------------------------------------------------------
@@ -158,7 +161,8 @@ public class ConsultasView extends JPanel {
         List<String[]> datos = consultasDAO.cartasSobreMediaPorEdicion(edicion.getIdEdicion());
         String[] cols = {"Carta", "Coste maná", "Tipo", "Rareza"};
         mostrarResultados(cols, datos);
-        lblInfo.setText("Consulta 4 — Edición: " + edicion.getNombre() + " — " + datos.size() + " cartas sobre la media.");
+        if (datos.isEmpty()) lblInfo.setText("Consulta 4 — Edición: " + edicion.getNombre() + " — Ninguna carta supera la media de coste.");
+        else lblInfo.setText("Consulta 4 — Edición: " + edicion.getNombre() + " — " + datos.size() + " cartas sobre la media.");
     }
 
     // -------------------------------------------------------

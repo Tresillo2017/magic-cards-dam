@@ -91,6 +91,10 @@ public class JugadorView extends JPanel {
     public void cargarTabla() {
         modeloTabla.setRowCount(0);
         List<Jugador> lista = jugadorDAO.listarTodosConMazos();
+        if (lista.isEmpty()) {
+            modeloTabla.addRow(new Object[]{"-", "Sin jugadores registrados", "", "", ""});
+            return;
+        }
         for (Jugador j : lista) {
             modeloTabla.addRow(new Object[]{
                 j.getIdJugador(), j.getNombre(), j.getEmail(),

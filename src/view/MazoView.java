@@ -137,10 +137,13 @@ public class MazoView extends JPanel {
     }
 
     public void cargarTabla() {
-        // Recarga combos para reflejar jugadores/cartas creados en otras vistas
         cargarCombos();
         modeloMazos.setRowCount(0);
         List<Mazo> lista = mazoDAO.listarTodos();
+        if (lista.isEmpty()) {
+            modeloMazos.addRow(new Object[]{"-", "Sin mazos registrados", ""});
+            return;
+        }
         for (Mazo m : lista) {
             String jugador = m.getJugador() != null ? m.getJugador().getNombre() : "";
             modeloMazos.addRow(new Object[]{m.getIdMazo(), m.getNombre(), jugador});
@@ -167,6 +170,10 @@ public class MazoView extends JPanel {
         modeloCartas.setRowCount(0);
         if (idMazoSeleccionado == -1) return;
         List<CartaMazo> lista = cartaMazoDAO.listarPorMazo(idMazoSeleccionado);
+        if (lista.isEmpty()) {
+            modeloCartas.addRow(new Object[]{"-", "Mazo vacío — añade cartas abajo", "", ""});
+            return;
+        }
         for (CartaMazo cm : lista) {
             String tipo = cm.getCarta().getTipoCarta() != null ? cm.getCarta().getTipoCarta().getNombre() : "";
             modeloCartas.addRow(new Object[]{
@@ -288,9 +295,19 @@ public class MazoView extends JPanel {
         List<Jugador> jugadores = jugadorDAO.listarTodos();
         cboJugador.removeAllItems();
         for (Jugador j : jugadores) cboJugador.addItem(j);
+        if (jugadores.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "No hay jugadores registrados. Ve a la sección Jugadores para añadir uno.",
+                "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
 
         List<Carta> cartas = cartaDAO.listarTodos();
         cboCartaAnadir.removeAllItems();
         for (Carta c : cartas) cboCartaAnadir.addItem(c);
+        if (cartas.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "No hay cartas registradas. Ve a la sección Cartas para añadir una.",
+                "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
     }
 }
