@@ -12,7 +12,7 @@ import java.util.List;
  * Acceso a datos para la entidad Mazo.
  * Proporciona operaciones CRUD sobre la tabla {@code mazo}.
  */
-public class MazoDAO {
+public class MazoDAO implements DAO<Mazo> {
 
     private Connection conexion;
 

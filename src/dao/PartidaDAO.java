@@ -12,7 +12,7 @@ import java.util.List;
  * Acceso a datos para la entidad Partida.
  * Proporciona operaciones CRUD sobre la tabla {@code partida}.
  */
-public class PartidaDAO {
+public class PartidaDAO implements DAO<Partida> {
 
     private Connection conexion;
 
