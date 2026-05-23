@@ -181,6 +181,19 @@ public class PartidaDAO implements DAO<Partida> {
     }
 
     /**
+     * Actualiza el ganador de una partida existente.
+     * Si {@code p.getGanador()} es null, pone el ganador a NULL (en curso).
+     * @param p partida con el ganador actualizado
+     */
+    @Override
+    public boolean actualizar(Partida p) {
+        if (p.getGanador() == null) {
+            return quitarGanador(p.getIdPartida());
+        }
+        return registrarGanador(p.getIdPartida(), p.getGanador().getIdJugador());
+    }
+
+    /**
      * Asigna un ganador a una partida existente.
      * @param idPartida  identificador de la partida
      * @param idGanador  identificador del jugador ganador
