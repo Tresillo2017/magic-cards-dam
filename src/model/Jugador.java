@@ -6,6 +6,7 @@ public class Jugador {
     private String nombre;
     private String email;
     private String fechaRegistro;
+    private int numMazos;
 
     public Jugador() {}
 
@@ -20,6 +21,9 @@ public class Jugador {
 
     public String getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(String fechaRegistro) { this.fechaRegistro = fechaRegistro; }
+
+    public int getNumMazos() { return numMazos; }
+    public void setNumMazos(int numMazos) { this.numMazos = numMazos; }
 
     @Override
     public String toString() { return nombre; }

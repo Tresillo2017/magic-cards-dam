@@ -92,6 +92,31 @@ public class JugadorDAO {
         }
     }
 
+    public List<Jugador> listarTodosConMazos() {
+        List<Jugador> lista = new ArrayList<>();
+        String sql = "SELECT j.id_jugador, j.nombre, j.email, j.fecha_registro, COUNT(m.id_mazo) AS num_mazos " +
+                     "FROM jugador j LEFT JOIN mazo m ON m.id_jugador = j.id_jugador " +
+                     "GROUP BY j.id_jugador ORDER BY j.nombre";
+        try {
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Jugador j = new Jugador();
+                j.setIdJugador(rs.getInt("id_jugador"));
+                j.setNombre(rs.getString("nombre"));
+                j.setEmail(rs.getString("email"));
+                j.setFechaRegistro(rs.getString("fecha_registro"));
+                j.setNumMazos(rs.getInt("num_mazos"));
+                lista.add(j);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
     public void eliminar(int id) {
         String sql = "DELETE FROM jugador WHERE id_jugador = ?";
         try {

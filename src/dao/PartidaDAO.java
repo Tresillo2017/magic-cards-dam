@@ -186,6 +186,18 @@ public class PartidaDAO {
         }
     }
 
+    public void quitarGanador(int idPartida) {
+        String sql = "UPDATE partida SET id_ganador = NULL WHERE id_partida = ?";
+        try {
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ps.setInt(1, idPartida);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void eliminar(int id) {
         String sql = "DELETE FROM partida WHERE id_partida = ?";
         try {
