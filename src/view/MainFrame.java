@@ -15,29 +15,29 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         setTitle("Magic Cards DAM");
-        setSize(900, 600);
+        setSize(950, 620);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        cartaView = new CartaView();
+        cartaView   = new CartaView();
         jugadorView = new JugadorView();
-        mazoView = new MazoView();
+        mazoView    = new MazoView();
         partidaView = new PartidaView();
 
         cardLayout = new CardLayout();
         panelContenido = new JPanel(cardLayout);
-        panelContenido.add(cartaView, "cartas");
+        panelContenido.add(cartaView,   "cartas");
         panelContenido.add(jugadorView, "jugadores");
-        panelContenido.add(mazoView, "mazos");
+        panelContenido.add(mazoView,    "mazos");
         panelContenido.add(partidaView, "partidas");
 
         JMenuBar menuBar = new JMenuBar();
 
         JMenu menuGestion = new JMenu("Gestión");
-        JMenuItem itemCartas = new JMenuItem("Cartas");
-        JMenuItem itemJugadores = new JMenuItem("Jugadores");
-        JMenuItem itemMazos = new JMenuItem("Mazos");
-        JMenuItem itemPartidas = new JMenuItem("Partidas");
+        JMenuItem itemCartas     = new JMenuItem("Cartas");
+        JMenuItem itemJugadores  = new JMenuItem("Jugadores");
+        JMenuItem itemMazos      = new JMenuItem("Mazos");
+        JMenuItem itemPartidas   = new JMenuItem("Partidas");
 
         itemCartas.addActionListener(e -> {
             cardLayout.show(panelContenido, "cartas");
@@ -79,6 +79,11 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception e) {
+            // Si Nimbus no está disponible, se usa el L&F por defecto
+        }
         SwingUtilities.invokeLater(() -> {
             MainFrame frame = new MainFrame();
             frame.setVisible(true);

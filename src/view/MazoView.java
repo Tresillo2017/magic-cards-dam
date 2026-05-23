@@ -24,8 +24,7 @@ public class MazoView extends JPanel {
 
     private JTextField txtNombreMazo;
     private JComboBox<Jugador> cboJugador;
-
-    private JComboBox<Carta> cboCartaAnadir;
+    private JComboBox<Carta>   cboCartaAnadir;
     private JTextField txtCantidad;
 
     private JButton btnNuevo;
@@ -35,23 +34,23 @@ public class MazoView extends JPanel {
     private JButton btnAnadirCarta;
     private JButton btnQuitarCarta;
 
-    private MazoDAO mazoDAO;
-    private JugadorDAO jugadorDAO;
-    private CartaDAO cartaDAO;
+    private MazoDAO      mazoDAO;
+    private JugadorDAO   jugadorDAO;
+    private CartaDAO     cartaDAO;
     private CartaMazoDAO cartaMazoDAO;
 
     private int idMazoSeleccionado = -1;
 
     public MazoView() {
-        mazoDAO = new MazoDAO();
-        jugadorDAO = new JugadorDAO();
-        cartaDAO = new CartaDAO();
+        mazoDAO      = new MazoDAO();
+        jugadorDAO   = new JugadorDAO();
+        cartaDAO     = new CartaDAO();
         cartaMazoDAO = new CartaMazoDAO();
 
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Panel izquierdo: lista de mazos
+        // Lista de mazos
         String[] columnasMazos = {"ID", "Nombre", "Jugador"};
         modeloMazos = new DefaultTableModel(columnasMazos, 0) {
             public boolean isCellEditable(int row, int col) { return false; }
@@ -67,7 +66,7 @@ public class MazoView extends JPanel {
         panelIzq.setBorder(BorderFactory.createTitledBorder("Mazos"));
         panelIzq.add(new JScrollPane(tablaMazos), BorderLayout.CENTER);
 
-        // Panel central: cartas del mazo
+        // Cartas del mazo
         String[] columnasCartas = {"ID", "Carta", "Tipo", "Cantidad"};
         modeloCartas = new DefaultTableModel(columnasCartas, 0) {
             public boolean isCellEditable(int row, int col) { return false; }
@@ -82,7 +81,7 @@ public class MazoView extends JPanel {
 
         JPanel panelAnadir = new JPanel(new FlowLayout(FlowLayout.LEFT));
         cboCartaAnadir = new JComboBox<>();
-        txtCantidad = new JTextField("1", 4);
+        txtCantidad    = new JTextField("1", 4);
         btnAnadirCarta = new JButton("Añadir carta");
         btnQuitarCarta = new JButton("Quitar carta");
         panelAnadir.add(new JLabel("Carta:"));
@@ -93,17 +92,17 @@ public class MazoView extends JPanel {
         panelAnadir.add(btnQuitarCarta);
         panelCentro.add(panelAnadir, BorderLayout.SOUTH);
 
-        // Panel derecho: formulario mazo
+        // Formulario mazo
         JPanel panelForm = new JPanel(new GridBagLayout());
         panelForm.setBorder(BorderFactory.createTitledBorder("Datos del mazo"));
         panelForm.setPreferredSize(new Dimension(260, 0));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(6, 6, 6, 6);
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill   = GridBagConstraints.HORIZONTAL;
 
         txtNombreMazo = new JTextField(15);
-        cboJugador = new JComboBox<>();
+        cboJugador    = new JComboBox<>();
 
         gbc.gridx = 0; gbc.gridy = 0; panelForm.add(new JLabel("Nombre:"), gbc);
         gbc.gridx = 1; panelForm.add(txtNombreMazo, gbc);
@@ -112,10 +111,10 @@ public class MazoView extends JPanel {
         gbc.gridx = 1; panelForm.add(cboJugador, gbc);
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        btnNuevo = new JButton("Nuevo");
-        btnGuardar = new JButton("Guardar");
+        btnNuevo    = new JButton("Nuevo");
+        btnGuardar  = new JButton("Guardar");
         btnEliminar = new JButton("Eliminar");
-        btnLimpiar = new JButton("Limpiar");
+        btnLimpiar  = new JButton("Limpiar");
         panelBotones.add(btnNuevo);
         panelBotones.add(btnGuardar);
         panelBotones.add(btnEliminar);
@@ -126,23 +125,20 @@ public class MazoView extends JPanel {
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzq, panelCentro);
         splitPane.setDividerLocation(300);
+        add(splitPane,  BorderLayout.CENTER);
+        add(panelForm,  BorderLayout.EAST);
 
-        add(splitPane, BorderLayout.CENTER);
-        add(panelForm, BorderLayout.EAST);
-
-        // Eventos
         btnNuevo.addActionListener(e -> limpiarFormulario());
         btnLimpiar.addActionListener(e -> limpiarFormulario());
         btnGuardar.addActionListener(e -> guardar());
         btnEliminar.addActionListener(e -> eliminar());
-
         btnAnadirCarta.addActionListener(e -> anadirCarta());
         btnQuitarCarta.addActionListener(e -> quitarCarta());
-
-        cargarCombos();
     }
 
     public void cargarTabla() {
+        // Recarga combos para reflejar jugadores/cartas creados en otras vistas
+        cargarCombos();
         modeloMazos.setRowCount(0);
         List<Mazo> lista = mazoDAO.listarTodos();
         for (Mazo m : lista) {
@@ -234,13 +230,31 @@ public class MazoView extends JPanel {
             JOptionPane.showMessageDialog(this, "La cantidad debe ser un número mayor que 0.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        CartaMazo cm = new CartaMazo();
-        Mazo mazo = new Mazo();
-        mazo.setIdMazo(idMazoSeleccionado);
-        cm.setMazo(mazo);
-        cm.setCarta(carta);
-        cm.setCantidad(cantidad);
-        cartaMazoDAO.insertar(cm);
+        // Comprobar si la carta ya está en el mazo
+        boolean yaExiste = false;
+        for (int i = 0; i < modeloCartas.getRowCount(); i++) {
+            if ((int) modeloCartas.getValueAt(i, 0) == carta.getIdCarta()) {
+                yaExiste = true;
+                // Actualizar cantidad
+                CartaMazo cm = new CartaMazo();
+                Mazo mazo = new Mazo();
+                mazo.setIdMazo(idMazoSeleccionado);
+                cm.setMazo(mazo);
+                cm.setCarta(carta);
+                cm.setCantidad(cantidad);
+                cartaMazoDAO.actualizar(cm);
+                break;
+            }
+        }
+        if (!yaExiste) {
+            CartaMazo cm = new CartaMazo();
+            Mazo mazo = new Mazo();
+            mazo.setIdMazo(idMazoSeleccionado);
+            cm.setMazo(mazo);
+            cm.setCarta(carta);
+            cm.setCantidad(cantidad);
+            cartaMazoDAO.insertar(cm);
+        }
         cargarCartasMazo();
     }
 

@@ -36,7 +36,6 @@ public class PartidaView extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Tabla
         String[] columnas = {"ID", "Fecha", "Jugador 1", "Jugador 2", "Ganador"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
             public boolean isCellEditable(int row, int col) { return false; }
@@ -49,7 +48,6 @@ public class PartidaView extends JPanel {
         });
         add(new JScrollPane(tabla), BorderLayout.CENTER);
 
-        // Formulario
         JPanel panelForm = new JPanel(new GridBagLayout());
         panelForm.setBorder(BorderFactory.createTitledBorder("Registrar partida"));
         panelForm.setPreferredSize(new Dimension(280, 0));
@@ -60,7 +58,7 @@ public class PartidaView extends JPanel {
 
         cboJugador1 = new JComboBox<>();
         cboJugador2 = new JComboBox<>();
-        cboGanador = new JComboBox<>();
+        cboGanador  = new JComboBox<>();
 
         int fila = 0;
         gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Jugador 1:"), gbc);
@@ -73,10 +71,10 @@ public class PartidaView extends JPanel {
         gbc.gridx = 1; panelForm.add(cboGanador, gbc);
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        btnNueva = new JButton("Nueva");
-        btnGuardar = new JButton("Guardar");
+        btnNueva    = new JButton("Nueva");
+        btnGuardar  = new JButton("Guardar");
         btnEliminar = new JButton("Eliminar");
-        btnLimpiar = new JButton("Limpiar");
+        btnLimpiar  = new JButton("Limpiar");
         panelBotones.add(btnNueva);
         panelBotones.add(btnGuardar);
         panelBotones.add(btnEliminar);
@@ -87,22 +85,21 @@ public class PartidaView extends JPanel {
 
         add(panelForm, BorderLayout.EAST);
 
-        // Eventos
         btnNueva.addActionListener(e -> limpiarFormulario());
         btnLimpiar.addActionListener(e -> limpiarFormulario());
         btnGuardar.addActionListener(e -> guardar());
         btnEliminar.addActionListener(e -> eliminar());
-
-        cargarCombos();
     }
 
     public void cargarTabla() {
+        // Recarga combos para reflejar jugadores creados en JugadorView
+        cargarCombos();
         modeloTabla.setRowCount(0);
         List<Partida> lista = partidaDAO.listarTodas();
         for (Partida p : lista) {
-            String j1 = p.getJugador1() != null ? p.getJugador1().getNombre() : "";
-            String j2 = p.getJugador2() != null ? p.getJugador2().getNombre() : "";
-            String ganador = p.getGanador() != null ? p.getGanador().getNombre() : "En curso";
+            String j1      = p.getJugador1() != null ? p.getJugador1().getNombre() : "";
+            String j2      = p.getJugador2() != null ? p.getJugador2().getNombre() : "";
+            String ganador = p.getGanador()  != null ? p.getGanador().getNombre()  : "En curso";
             modeloTabla.addRow(new Object[]{p.getIdPartida(), p.getFecha(), j1, j2, ganador});
         }
     }
@@ -124,23 +121,25 @@ public class PartidaView extends JPanel {
 
     private void guardar() {
         if (!validar()) return;
-        Jugador j1 = (Jugador) cboJugador1.getSelectedItem();
-        Jugador j2 = (Jugador) cboJugador2.getSelectedItem();
+        Jugador j1      = (Jugador) cboJugador1.getSelectedItem();
+        Jugador j2      = (Jugador) cboJugador2.getSelectedItem();
         Jugador ganador = (Jugador) cboGanador.getSelectedItem();
-
-        Partida p = new Partida();
-        p.setJugador1(j1);
-        p.setJugador2(j2);
-        if (ganador != null && ganador.getIdJugador() != -1) p.setGanador(ganador);
+        boolean sinGanador = ganador == null || ganador.getIdJugador() == -1;
 
         if (idPartidaSeleccionada == -1) {
+            Partida p = new Partida();
+            p.setJugador1(j1);
+            p.setJugador2(j2);
+            if (!sinGanador) p.setGanador(ganador);
             partidaDAO.insertar(p);
             JOptionPane.showMessageDialog(this, "Partida registrada correctamente.");
         } else {
-            if (ganador != null && ganador.getIdJugador() != -1) {
+            if (sinGanador) {
+                partidaDAO.quitarGanador(idPartidaSeleccionada);
+            } else {
                 partidaDAO.registrarGanador(idPartidaSeleccionada, ganador.getIdJugador());
-                JOptionPane.showMessageDialog(this, "Ganador actualizado correctamente.");
             }
+            JOptionPane.showMessageDialog(this, "Partida actualizada correctamente.");
         }
         limpiarFormulario();
         cargarTabla();
@@ -162,8 +161,9 @@ public class PartidaView extends JPanel {
     }
 
     private boolean validar() {
-        Jugador j1 = (Jugador) cboJugador1.getSelectedItem();
-        Jugador j2 = (Jugador) cboJugador2.getSelectedItem();
+        Jugador j1      = (Jugador) cboJugador1.getSelectedItem();
+        Jugador j2      = (Jugador) cboJugador2.getSelectedItem();
+        Jugador ganador = (Jugador) cboGanador.getSelectedItem();
         if (j1 == null || j2 == null) {
             JOptionPane.showMessageDialog(this, "Selecciona los dos jugadores.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
@@ -172,6 +172,12 @@ public class PartidaView extends JPanel {
             JOptionPane.showMessageDialog(this, "Los dos jugadores deben ser distintos.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+        if (ganador != null && ganador.getIdJugador() != -1) {
+            if (ganador.getIdJugador() != j1.getIdJugador() && ganador.getIdJugador() != j2.getIdJugador()) {
+                JOptionPane.showMessageDialog(this, "El ganador debe ser uno de los dos jugadores.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
         return true;
     }
 
@@ -179,7 +185,7 @@ public class PartidaView extends JPanel {
         idPartidaSeleccionada = -1;
         if (cboJugador1.getItemCount() > 0) cboJugador1.setSelectedIndex(0);
         if (cboJugador2.getItemCount() > 0) cboJugador2.setSelectedIndex(0);
-        cboGanador.setSelectedIndex(0);
+        if (cboGanador.getItemCount()  > 0) cboGanador.setSelectedIndex(0);
         tabla.clearSelection();
     }
 
@@ -188,12 +194,10 @@ public class PartidaView extends JPanel {
         cboJugador1.removeAllItems();
         cboJugador2.removeAllItems();
         cboGanador.removeAllItems();
-
         Jugador sinGanador = new Jugador();
         sinGanador.setIdJugador(-1);
         sinGanador.setNombre("(en curso)");
         cboGanador.addItem(sinGanador);
-
         for (Jugador j : jugadores) {
             cboJugador1.addItem(j);
             cboJugador2.addItem(j);

@@ -15,7 +15,7 @@ public class JugadorView extends JPanel {
 
     private JTextField txtNombre;
     private JTextField txtEmail;
-    private JTextField txtFechaRegistro;
+    private JLabel lblFechaRegistro;
 
     private JButton btnNuevo;
     private JButton btnGuardar;
@@ -30,14 +30,15 @@ public class JugadorView extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Tabla
-        String[] columnas = {"ID", "Nombre", "Email", "Fecha registro"};
+        // Tabla (incluye columna Nº mazos)
+        String[] columnas = {"ID", "Nombre", "Email", "Fecha registro", "Mazos"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
             public boolean isCellEditable(int row, int col) { return false; }
         };
         tabla = new JTable(modeloTabla);
         tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tabla.getColumnModel().getColumn(0).setMaxWidth(40);
+        tabla.getColumnModel().getColumn(4).setMaxWidth(55);
         tabla.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) cargarFormulario();
         });
@@ -53,9 +54,8 @@ public class JugadorView extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         txtNombre = new JTextField(18);
-        txtEmail = new JTextField(18);
-        txtFechaRegistro = new JTextField(18);
-        txtFechaRegistro.setToolTipText("Formato: AAAA-MM-DD");
+        txtEmail  = new JTextField(18);
+        lblFechaRegistro = new JLabel("-");
 
         int fila = 0;
         gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Nombre:"), gbc);
@@ -65,13 +65,13 @@ public class JugadorView extends JPanel {
         gbc.gridx = 1; panelForm.add(txtEmail, gbc);
 
         fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Fecha registro:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtFechaRegistro, gbc);
+        gbc.gridx = 1; panelForm.add(lblFechaRegistro, gbc);
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        btnNuevo = new JButton("Nuevo");
-        btnGuardar = new JButton("Guardar");
+        btnNuevo    = new JButton("Nuevo");
+        btnGuardar  = new JButton("Guardar");
         btnEliminar = new JButton("Eliminar");
-        btnLimpiar = new JButton("Limpiar");
+        btnLimpiar  = new JButton("Limpiar");
         panelBotones.add(btnNuevo);
         panelBotones.add(btnGuardar);
         panelBotones.add(btnEliminar);
@@ -82,7 +82,6 @@ public class JugadorView extends JPanel {
 
         add(panelForm, BorderLayout.EAST);
 
-        // Eventos
         btnNuevo.addActionListener(e -> limpiarFormulario());
         btnLimpiar.addActionListener(e -> limpiarFormulario());
         btnGuardar.addActionListener(e -> guardar());
@@ -91,10 +90,11 @@ public class JugadorView extends JPanel {
 
     public void cargarTabla() {
         modeloTabla.setRowCount(0);
-        List<Jugador> lista = jugadorDAO.listarTodos();
+        List<Jugador> lista = jugadorDAO.listarTodosConMazos();
         for (Jugador j : lista) {
             modeloTabla.addRow(new Object[]{
-                j.getIdJugador(), j.getNombre(), j.getEmail(), j.getFechaRegistro()
+                j.getIdJugador(), j.getNombre(), j.getEmail(),
+                j.getFechaRegistro(), j.getNumMazos()
             });
         }
     }
@@ -107,7 +107,7 @@ public class JugadorView extends JPanel {
         if (j == null) return;
         txtNombre.setText(j.getNombre());
         txtEmail.setText(j.getEmail());
-        txtFechaRegistro.setText(j.getFechaRegistro() != null ? j.getFechaRegistro() : "");
+        lblFechaRegistro.setText(j.getFechaRegistro() != null ? j.getFechaRegistro() : "-");
     }
 
     private void guardar() {
@@ -115,7 +115,6 @@ public class JugadorView extends JPanel {
         Jugador j = new Jugador();
         j.setNombre(txtNombre.getText().trim());
         j.setEmail(txtEmail.getText().trim());
-        j.setFechaRegistro(txtFechaRegistro.getText().trim());
 
         if (idJugadorSeleccionado == -1) {
             jugadorDAO.insertar(j);
@@ -167,7 +166,7 @@ public class JugadorView extends JPanel {
         idJugadorSeleccionado = -1;
         txtNombre.setText("");
         txtEmail.setText("");
-        txtFechaRegistro.setText("");
+        lblFechaRegistro.setText("-");
         tabla.clearSelection();
     }
 }
