@@ -88,7 +88,7 @@ public class PartidaView extends JPanel {
         btnGuardar.setToolTipText("Registrar o actualizar la partida");
         btnEliminar.setToolTipText("Eliminar la partida seleccionada");
 
-        JPanel panelBotones = new JPanel(new GridLayout(1, 4, 5, 0));
+        JPanel panelBotones = new JPanel(new GridLayout(2, 2, 5, 5));
         panelBotones.add(btnNueva);
         panelBotones.add(btnGuardar);
         panelBotones.add(btnEliminar);
