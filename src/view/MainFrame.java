@@ -76,6 +76,18 @@ public class MainFrame extends JFrame {
         menuBar.add(menuGestion);
 
         JMenu menuAyuda = new JMenu("Ayuda");
+        JMenuItem itemDocumentacion = new JMenuItem("Documentación (Wiki)");
+        itemDocumentacion.addActionListener(e -> {
+            try {
+                java.awt.Desktop.getDesktop().browse(new java.net.URI("https://github.com/Tresillo2017/magic-cards-dam/wiki"));
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                    "No se pudo abrir el navegador.\nVisita manualmente:\nhttps://github.com/Tresillo2017/magic-cards-dam/wiki",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        menuAyuda.add(itemDocumentacion);
+        menuAyuda.addSeparator();
         JMenuItem itemAcerca = new JMenuItem("Acerca de");
         itemAcerca.addActionListener(e -> {
             JPanel panel = new JPanel();
