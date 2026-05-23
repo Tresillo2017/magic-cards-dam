@@ -8,6 +8,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acceso a datos para la entidad Mazo.
+ * Proporciona operaciones CRUD sobre la tabla {@code mazo}.
+ */
 public class MazoDAO {
 
     private Connection conexion;
@@ -16,6 +20,7 @@ public class MazoDAO {
         conexion = ConexionDB.getInstancia().getConexion();
     }
 
+    /** Inserta un mazo y actualiza su {@code idMazo} con la clave generada. */
     public void insertar(Mazo m) {
         String sql = "INSERT INTO mazo (nombre, id_jugador) VALUES (?, ?)";
         try {
@@ -34,6 +39,11 @@ public class MazoDAO {
         }
     }
 
+    /**
+     * Obtiene un mazo por su ID incluyendo los datos del jugador propietario.
+     * @param id identificador del mazo
+     * @return objeto Mazo o {@code null} si no existe
+     */
     public Mazo obtenerPorId(int id) {
         Mazo mazo = null;
         String sql = "SELECT m.id_mazo, m.nombre, j.id_jugador, j.nombre AS nombre_jugador, " +
@@ -63,6 +73,7 @@ public class MazoDAO {
         return mazo;
     }
 
+    /** Devuelve todos los mazos con datos del jugador, ordenados por nombre. */
     public List<Mazo> listarTodos() {
         List<Mazo> lista = new ArrayList<>();
         String sql = "SELECT m.id_mazo, m.nombre, j.id_jugador, j.nombre AS nombre_jugador, " +
@@ -91,6 +102,11 @@ public class MazoDAO {
         return lista;
     }
 
+    /**
+     * Devuelve los mazos de un jugador concreto.
+     * @param idJugador identificador del jugador
+     * @return lista de mazos del jugador
+     */
     public List<Mazo> listarPorJugador(int idJugador) {
         List<Mazo> lista = new ArrayList<>();
         String sql = "SELECT m.id_mazo, m.nombre, j.id_jugador, j.nombre AS nombre_jugador, " +

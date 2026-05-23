@@ -8,6 +8,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acceso a datos para la entidad Partida.
+ * Proporciona operaciones CRUD sobre la tabla {@code partida}.
+ */
 public class PartidaDAO {
 
     private Connection conexion;
@@ -16,6 +20,7 @@ public class PartidaDAO {
         conexion = ConexionDB.getInstancia().getConexion();
     }
 
+    /** Inserta una nueva partida con la fecha actual y actualiza su {@code idPartida}. */
     public void insertar(Partida p) {
         String sql = "INSERT INTO partida (fecha, id_jugador1, id_jugador2, id_ganador) VALUES (NOW(), ?, ?, ?)";
         try {
@@ -173,6 +178,11 @@ public class PartidaDAO {
         return lista;
     }
 
+    /**
+     * Asigna un ganador a una partida existente.
+     * @param idPartida  identificador de la partida
+     * @param idGanador  identificador del jugador ganador
+     */
     public void registrarGanador(int idPartida, int idGanador) {
         String sql = "UPDATE partida SET id_ganador = ? WHERE id_partida = ?";
         try {
@@ -186,6 +196,10 @@ public class PartidaDAO {
         }
     }
 
+    /**
+     * Pone el ganador de una partida a NULL (marca la partida como "en curso").
+     * @param idPartida identificador de la partida
+     */
     public void quitarGanador(int idPartida) {
         String sql = "UPDATE partida SET id_ganador = NULL WHERE id_partida = ?";
         try {

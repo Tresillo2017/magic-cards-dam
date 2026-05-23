@@ -7,6 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acceso a datos para la entidad Jugador.
+ * Proporciona operaciones CRUD sobre la tabla {@code jugador}.
+ */
 public class JugadorDAO {
 
     private Connection conexion;
@@ -15,6 +19,7 @@ public class JugadorDAO {
         conexion = ConexionDB.getInstancia().getConexion();
     }
 
+    /** Inserta un jugador y actualiza su {@code idJugador} con la clave generada. */
     public void insertar(Jugador j) {
         String sql = "INSERT INTO jugador (nombre, email, fecha_registro) VALUES (?, ?, ?)";
         try {
@@ -34,6 +39,11 @@ public class JugadorDAO {
         }
     }
 
+    /**
+     * Obtiene un jugador por su ID.
+     * @param id identificador del jugador
+     * @return objeto Jugador o {@code null} si no existe
+     */
     public Jugador obtenerPorId(int id) {
         Jugador jugador = null;
         String sql = "SELECT id_jugador, nombre, email, fecha_registro FROM jugador WHERE id_jugador = ?";
@@ -56,6 +66,7 @@ public class JugadorDAO {
         return jugador;
     }
 
+    /** Devuelve todos los jugadores ordenados por nombre. */
     public List<Jugador> listarTodos() {
         List<Jugador> lista = new ArrayList<>();
         String sql = "SELECT id_jugador, nombre, email, fecha_registro FROM jugador ORDER BY nombre";
@@ -78,6 +89,7 @@ public class JugadorDAO {
         return lista;
     }
 
+    /** Actualiza nombre y email del jugador. */
     public void actualizar(Jugador j) {
         String sql = "UPDATE jugador SET nombre = ?, email = ? WHERE id_jugador = ?";
         try {
@@ -92,6 +104,7 @@ public class JugadorDAO {
         }
     }
 
+    /** Devuelve todos los jugadores incluyendo el número de mazos que posee cada uno. */
     public List<Jugador> listarTodosConMazos() {
         List<Jugador> lista = new ArrayList<>();
         String sql = "SELECT j.id_jugador, j.nombre, j.email, j.fecha_registro, COUNT(m.id_mazo) AS num_mazos " +
@@ -117,6 +130,10 @@ public class JugadorDAO {
         return lista;
     }
 
+    /**
+     * Elimina el jugador con el ID indicado.
+     * @param id identificador del jugador
+     */
     public void eliminar(int id) {
         String sql = "DELETE FROM jugador WHERE id_jugador = ?";
         try {

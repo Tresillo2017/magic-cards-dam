@@ -7,6 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acceso a datos para la entidad Carta.
+ * Proporciona operaciones CRUD y búsqueda sobre la tabla {@code carta}.
+ */
 public class CartaDAO {
 
     private Connection conexion;
@@ -15,6 +19,7 @@ public class CartaDAO {
         conexion = ConexionDB.getInstancia().getConexion();
     }
 
+    /** Inserta una nueva carta y actualiza su {@code idCarta} con la clave generada. */
     public void insertar(Carta c) {
         String sql = "INSERT INTO carta (nombre, coste_mana, fuerza, resistencia, texto_habilidad, " +
                      "rareza, legendario, id_tipo_carta, id_tipo_secundario, id_edicion) " +
@@ -46,6 +51,11 @@ public class CartaDAO {
         }
     }
 
+    /**
+     * Obtiene una carta por su ID incluyendo tipo, edición y colores.
+     * @param id identificador de la carta
+     * @return objeto Carta o {@code null} si no existe
+     */
     public Carta obtenerPorId(int id) {
         Carta carta = null;
         String sql = "SELECT c.id_carta, c.nombre, c.coste_mana, c.fuerza, c.resistencia, " +
@@ -99,6 +109,7 @@ public class CartaDAO {
         return carta;
     }
 
+    /** Devuelve todas las cartas ordenadas por nombre. */
     public List<Carta> listarTodos() {
         List<Carta> lista = new ArrayList<>();
         String sql = "SELECT c.id_carta, c.nombre, c.coste_mana, c.fuerza, c.resistencia, " +
@@ -142,6 +153,11 @@ public class CartaDAO {
         return lista;
     }
 
+    /**
+     * Busca cartas cuyo nombre contenga el texto indicado (búsqueda parcial).
+     * @param nombre texto a buscar
+     * @return lista de cartas coincidentes
+     */
     public List<Carta> buscarPorNombre(String nombre) {
         List<Carta> lista = new ArrayList<>();
         String sql = "SELECT c.id_carta, c.nombre, c.coste_mana, c.rareza, c.legendario, " +
@@ -179,6 +195,7 @@ public class CartaDAO {
         return lista;
     }
 
+    /** Actualiza todos los campos de la carta en la base de datos. */
     public void actualizar(Carta c) {
         String sql = "UPDATE carta SET nombre = ?, coste_mana = ?, fuerza = ?, resistencia = ?, " +
                      "texto_habilidad = ?, rareza = ?, legendario = ?, " +
@@ -206,6 +223,10 @@ public class CartaDAO {
         }
     }
 
+    /**
+     * Elimina la carta con el ID indicado.
+     * @param id identificador de la carta a eliminar
+     */
     public void eliminar(int id) {
         String sql = "DELETE FROM carta WHERE id_carta = ?";
         try {

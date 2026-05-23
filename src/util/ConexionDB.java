@@ -4,6 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Gestiona la conexión JDBC a la base de datos MySQL.
+ * Implementa el patrón Singleton para reutilizar una única conexión.
+ */
 public class ConexionDB {
 
     private static final String URL = "jdbc:mysql://localhost:3306/magic_cards";
@@ -21,6 +25,10 @@ public class ConexionDB {
         }
     }
 
+    /**
+     * Devuelve la única instancia de ConexionDB, creándola si no existe.
+     * @return instancia única de ConexionDB
+     */
     public static ConexionDB getInstancia() {
         if (instancia == null) {
             instancia = new ConexionDB();
@@ -28,6 +36,10 @@ public class ConexionDB {
         return instancia;
     }
 
+    /**
+     * Devuelve el objeto Connection activo.
+     * @return conexión JDBC
+     */
     public Connection getConexion() {
         return conexion;
     }
