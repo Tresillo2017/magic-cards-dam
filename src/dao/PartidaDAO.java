@@ -88,7 +88,8 @@ public class PartidaDAO implements DAO<Partida> {
         return partida;
     }
 
-    public List<Partida> listarTodas() {
+    @Override
+    public List<Partida> listarTodos() {
         List<Partida> lista = new ArrayList<>();
         String sql = "SELECT p.id_partida, p.fecha, " +
                      "j1.id_jugador AS id_j1, j1.nombre AS nombre_j1, j1.email AS email_j1, " +
