@@ -123,7 +123,7 @@ public class CartaView extends JPanel {
         btnGuardar.setToolTipText("Guardar carta (Enter)");
         btnEliminar.setToolTipText("Eliminar carta seleccionada");
 
-        JPanel panelBotones = new JPanel(new GridLayout(1, 4, 5, 0));
+        JPanel panelBotones = new JPanel(new GridLayout(2, 2, 5, 5));
         panelBotones.add(btnNuevo);
         panelBotones.add(btnGuardar);
         panelBotones.add(btnEliminar);

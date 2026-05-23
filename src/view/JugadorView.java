@@ -77,7 +77,7 @@ public class JugadorView extends JPanel {
         btnGuardar.setToolTipText("Guardar jugador (Enter)");
         btnEliminar.setToolTipText("Eliminar jugador seleccionado");
 
-        JPanel panelBotones = new JPanel(new GridLayout(1, 4, 5, 0));
+        JPanel panelBotones = new JPanel(new GridLayout(2, 2, 5, 5));
         panelBotones.add(btnNuevo);
         panelBotones.add(btnGuardar);
         panelBotones.add(btnEliminar);
