@@ -12,6 +12,7 @@ public class MainFrame extends JFrame {
     private JugadorView jugadorView;
     private MazoView mazoView;
     private PartidaView partidaView;
+    private ConsultasView consultasView;
 
     public MainFrame() {
         setTitle("Magic Cards DAM");
@@ -19,17 +20,19 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        cartaView   = new CartaView();
-        jugadorView = new JugadorView();
-        mazoView    = new MazoView();
-        partidaView = new PartidaView();
+        cartaView     = new CartaView();
+        jugadorView   = new JugadorView();
+        mazoView      = new MazoView();
+        partidaView   = new PartidaView();
+        consultasView = new ConsultasView();
 
         cardLayout = new CardLayout();
         panelContenido = new JPanel(cardLayout);
-        panelContenido.add(cartaView,   "cartas");
-        panelContenido.add(jugadorView, "jugadores");
-        panelContenido.add(mazoView,    "mazos");
-        panelContenido.add(partidaView, "partidas");
+        panelContenido.add(cartaView,     "cartas");
+        panelContenido.add(jugadorView,   "jugadores");
+        panelContenido.add(mazoView,      "mazos");
+        panelContenido.add(partidaView,   "partidas");
+        panelContenido.add(consultasView, "consultas");
 
         JMenuBar menuBar = new JMenuBar();
 
@@ -38,6 +41,7 @@ public class MainFrame extends JFrame {
         JMenuItem itemJugadores  = new JMenuItem("Jugadores");
         JMenuItem itemMazos      = new JMenuItem("Mazos");
         JMenuItem itemPartidas   = new JMenuItem("Partidas");
+        JMenuItem itemConsultas  = new JMenuItem("Consultas avanzadas");
 
         itemCartas.addActionListener(e -> {
             cardLayout.show(panelContenido, "cartas");
@@ -55,11 +59,17 @@ public class MainFrame extends JFrame {
             cardLayout.show(panelContenido, "partidas");
             partidaView.cargarTabla();
         });
+        itemConsultas.addActionListener(e -> {
+            cardLayout.show(panelContenido, "consultas");
+            consultasView.cargarTabla();
+        });
 
         menuGestion.add(itemCartas);
         menuGestion.add(itemJugadores);
         menuGestion.add(itemMazos);
         menuGestion.add(itemPartidas);
+        menuGestion.addSeparator();
+        menuGestion.add(itemConsultas);
         menuBar.add(menuGestion);
 
         JMenu menuAyuda = new JMenu("Ayuda");

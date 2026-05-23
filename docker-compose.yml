@@ -8,6 +8,7 @@ services:
       MYSQL_DATABASE: magic_cards
       MYSQL_USER: magic_user
       MYSQL_PASSWORD: EbHuYuWuA5EKvr21tEjuXZq
+    command: --log_bin_trust_function_creators=1
     ports:
       - "3306:3306"
     volumes:
