@@ -1,7 +1,23 @@
 -- Datos de prueba para Magic Cards DAM
 -- Ejecutar después de schema.sql
+-- Idempotente: se puede ejecutar varias veces sin errores
 
 USE magic_cards;
+
+-- -------------------------------------------------------
+-- Reset para ejecución idempotente
+-- -------------------------------------------------------
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE partida;
+TRUNCATE TABLE carta_mazo;
+TRUNCATE TABLE carta_color;
+TRUNCATE TABLE mazo;
+TRUNCATE TABLE jugador;
+TRUNCATE TABLE carta;
+TRUNCATE TABLE edicion;
+TRUNCATE TABLE color;
+TRUNCATE TABLE tipo_carta;
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- -------------------------------------------------------
 -- Tipos de carta
@@ -36,73 +52,85 @@ INSERT INTO edicion (nombre, fecha_lanzamiento) VALUES
     ('Lost Caverns of Ixalan', '2023-11-17');
 
 -- -------------------------------------------------------
--- Cartas (id_tipo: 1=Criatura 2=Hechizo 3=Tierra 4=Instantáneo 5=Encantamiento 6=Artefacto)
--- id_edicion: 1=Dominaria 2=Brothers War 3=March 4=Wilds 5=Ixalan
+-- Cartas (30 en total)
 -- -------------------------------------------------------
-INSERT INTO carta (nombre, coste_mana, fuerza, resistencia, texto_habilidad, rareza, legendario, id_tipo_carta, id_tipo_secundario, id_edicion) VALUES
-    -- Criaturas
-    ('Serra Angel',          5, 4, 4, 'Vuelo, vigilancia.',                                          'Infrecuente', FALSE, 1, NULL, 1),
-    ('Llanowar Elves',       1, 1, 1, 'Tap: añade un maná verde.',                                   'Común',       FALSE, 1, NULL, 1),
-    ('Shivan Dragon',        6, 5, 5, 'Vuela. Tap: +1/+0 hasta fin de turno.',                       'Rara',        FALSE, 1, NULL, 1),
-    ('Arcanis the Omnipotent', 6, 3, 4, 'Tap: roba tres cartas. Devuélvelo a tu mano.',              'Rara',        TRUE,  1, NULL, 2),
-    ('Tarmogoyf',            2, NULL, NULL, 'Fuerza/resistencia = nº de tipos de carta en cementerios.', 'Mítica',  FALSE, 1, NULL, 3),
-    ('Skrelv, Defector Mite',1, 1, 1, 'Phyrexian. Da protección de un color hasta fin de turno.',   'Rara',        TRUE,  1, NULL, 3),
-    ('Restless Cottage',     0, 3, 3, 'Puede atacar como criatura 3/3 con mamporro.',                'Infrecuente', FALSE, 1, 3,    4),
-    ('Roost of Drakes',      1, NULL, NULL, 'Cada vez que lances un hechizo azul, crea una ficha Drake 2/2.', 'Infrecuente', FALSE, 5, NULL, 4),
-    ('Sentinel of Lost Lore',4, 3, 4, 'Vuelo. Cuando entre, explora.',                              'Infrecuente', FALSE, 1, NULL, 5),
-    ('Abuelo, Ancestry''s Echo', 4, 2, 5, 'Leyenda. Tap: devuelve artefacto o encantamiento del cementerio.', 'Mítica', TRUE, 1, NULL, 5),
-    -- Hechizos e instantáneos
-    ('Lightning Bolt',       1, NULL, NULL, 'Inflige 3 puntos de daño a cualquier objetivo.',        'Común',       FALSE, 4, NULL, 1),
-    ('Counterspell',         2, NULL, NULL, 'Contrarresta el hechizo objetivo.',                      'Infrecuente', FALSE, 4, NULL, 2),
-    ('Dark Ritual',          1, NULL, NULL, 'Añade tres manás negros.',                              'Común',       FALSE, 4, NULL, 2),
-    ('Wrath of God',         4, NULL, NULL, 'Destruye todas las criaturas. No pueden regenerarse.',   'Rara',        FALSE, 2, NULL, 1),
-    ('Naturalize',           2, NULL, NULL, 'Destruye artefacto o encantamiento objetivo.',           'Común',       FALSE, 4, NULL, 3),
-    -- Tierras
-    ('Llano de la Pradera',  0, NULL, NULL, 'Tierra básica. Tap: añade un maná blanco.',             'Común',       FALSE, 3, NULL, 1),
-    ('Isla',                 0, NULL, NULL, 'Tierra básica. Tap: añade un maná azul.',               'Común',       FALSE, 3, NULL, 1),
-    ('Pantano',              0, NULL, NULL, 'Tierra básica. Tap: añade un maná negro.',              'Común',       FALSE, 3, NULL, 1),
-    ('Montaña',              0, NULL, NULL, 'Tierra básica. Tap: añade un maná rojo.',               'Común',       FALSE, 3, NULL, 1),
-    ('Bosque',               0, NULL, NULL, 'Tierra básica. Tap: añade un maná verde.',              'Común',       FALSE, 3, NULL, 1),
-    -- Artefactos y encantamientos
-    ('Sol Ring',             1, NULL, NULL, 'Tap: añade dos manás incoloros.',                        'Infrecuente', FALSE, 6, NULL, 2),
-    ('Sword of Fire and Ice', 3, NULL, NULL, 'Equipar 2. +2/+2. Protección de rojo y azul.',         'Mítica',      FALSE, 6, NULL, 2),
-    ('Propaganda',           3, NULL, NULL, 'Los oponentes pagan 2 por cada criatura que ataque.',   'Infrecuente', FALSE, 5, NULL, 3),
-    ('Crucible of Worlds',   3, NULL, NULL, 'Puedes jugar tierras desde tu cementerio.',             'Mítica',      FALSE, 6, NULL, 3),
-    ('Wilderness Reclamation',4, NULL, NULL, 'Al final de cada turno, desactiva todas tus tierras.', 'Infrecuente', FALSE, 5, NULL, 4);
+INSERT INTO carta (nombre, coste_mana, fuerza, resistencia, texto_habilidad, rareza, legendario, id_tipo_carta, id_tipo_secundario, id_edicion)
+SELECT t.nombre, t.coste_mana, t.fuerza, t.resistencia, t.texto_habilidad, t.rareza, t.legendario,
+       (SELECT id_tipo FROM tipo_carta WHERE nombre = t.tipo),
+       (SELECT id_tipo FROM tipo_carta WHERE nombre = t.tipo_sec),
+       (SELECT id_edicion FROM edicion WHERE nombre = t.edicion)
+FROM (SELECT 'Serra Angel'             nombre, 5  coste_mana, 4    fuerza, 4    resistencia, 'Vuelo, vigilancia.'                                                   texto_habilidad, 'Infrecuente' rareza, FALSE legendario, 'Criatura'    tipo, NULL       tipo_sec, 'Dominaria United'       edicion UNION ALL
+      SELECT 'Llanowar Elves',                  1,            1,           1,           'Tap: añade un maná verde.',                                                    'Común',       FALSE,            'Criatura',     NULL,               'Dominaria United'       UNION ALL
+      SELECT 'Shivan Dragon',                   6,            5,           5,           'Vuela. Tap: +1/+0 hasta fin de turno.',                                        'Rara',        FALSE,            'Criatura',     NULL,               'Dominaria United'       UNION ALL
+      SELECT 'Arcanis the Omnipotent',          6,            3,           4,           'Tap: roba tres cartas. Devuélvelo a tu mano.',                                 'Rara',        TRUE,             'Criatura',     NULL,               'The Brothers War'       UNION ALL
+      SELECT 'Tarmogoyf',                       2,            NULL,        NULL,        'Fuerza/resistencia = nº de tipos de carta en cementerios.',                    'Mítica',      FALSE,            'Criatura',     NULL,               'March of the Machine'   UNION ALL
+      SELECT 'Skrelv, Defector Mite',           1,            1,           1,           'Phyrexian. Da protección de un color hasta fin de turno.',                     'Rara',        TRUE,             'Criatura',     NULL,               'March of the Machine'   UNION ALL
+      SELECT 'Restless Cottage',                0,            3,           3,           'Puede atacar como criatura 3/3 con mamporro.',                                 'Infrecuente', FALSE,            'Criatura',     'Tierra',           'Wilds of Eldraine'      UNION ALL
+      SELECT 'Sentinel of Lost Lore',           4,            3,           4,           'Vuelo. Cuando entre, explora.',                                                'Infrecuente', FALSE,            'Criatura',     NULL,               'Lost Caverns of Ixalan' UNION ALL
+      SELECT 'Abuelo, Ancestry''s Echo',        4,            2,           5,           'Leyenda. Tap: devuelve artefacto o encantamiento del cementerio.',             'Mítica',      TRUE,             'Criatura',     NULL,               'Lost Caverns of Ixalan' UNION ALL
+      SELECT 'Goblin Guide',                    1,            2,           2,           'Prisa. Cuando ataque, el oponente roba una carta.',                            'Rara',        FALSE,            'Criatura',     NULL,               'Lost Caverns of Ixalan' UNION ALL
+      SELECT 'Birds of Paradise',               1,            0,           1,           'Vuelo. Tap: añade un maná de cualquier color.',                                'Rara',        FALSE,            'Criatura',     NULL,               'March of the Machine'   UNION ALL
+      SELECT 'Snapcaster Mage',                 2,            2,           1,           'Destello. Flashback a un instantáneo o hechizo del cementerio.',              'Mítica',      FALSE,            'Criatura',     NULL,               'The Brothers War'       UNION ALL
+      SELECT 'Lightning Bolt',                  1,            NULL,        NULL,        'Inflige 3 puntos de daño a cualquier objetivo.',                               'Común',       FALSE,            'Instantáneo',  NULL,               'Dominaria United'       UNION ALL
+      SELECT 'Counterspell',                    2,            NULL,        NULL,        'Contrarresta el hechizo objetivo.',                                            'Infrecuente', FALSE,            'Instantáneo',  NULL,               'The Brothers War'       UNION ALL
+      SELECT 'Dark Ritual',                     1,            NULL,        NULL,        'Añade tres manás negros.',                                                     'Común',       FALSE,            'Instantáneo',  NULL,               'The Brothers War'       UNION ALL
+      SELECT 'Path to Exile',                   1,            NULL,        NULL,        'Exilia criatura objetivo. Su controlador puede buscar una tierra básica.',     'Infrecuente', FALSE,            'Instantáneo',  NULL,               'Dominaria United'       UNION ALL
+      SELECT 'Naturalize',                      2,            NULL,        NULL,        'Destruye artefacto o encantamiento objetivo.',                                 'Común',       FALSE,            'Instantáneo',  NULL,               'March of the Machine'   UNION ALL
+      SELECT 'Wrath of God',                    4,            NULL,        NULL,        'Destruye todas las criaturas. No pueden regenerarse.',                         'Rara',        FALSE,            'Hechizo',      NULL,               'Dominaria United'       UNION ALL
+      SELECT 'Thoughtseize',                    1,            NULL,        NULL,        'El oponente muestra su mano; eliges una carta que no sea tierra y la descarta.','Rara',       FALSE,            'Hechizo',      NULL,               'Wilds of Eldraine'      UNION ALL
+      SELECT 'Demonic Tutor',                   2,            NULL,        NULL,        'Busca cualquier carta de tu mazo y ponla en tu mano.',                         'Rara',        FALSE,            'Hechizo',      NULL,               'The Brothers War'       UNION ALL
+      SELECT 'Llano de la Pradera',             0,            NULL,        NULL,        'Tierra básica. Tap: añade un maná blanco.',                                    'Común',       FALSE,            'Tierra',       NULL,               'Dominaria United'       UNION ALL
+      SELECT 'Isla',                            0,            NULL,        NULL,        'Tierra básica. Tap: añade un maná azul.',                                      'Común',       FALSE,            'Tierra',       NULL,               'Dominaria United'       UNION ALL
+      SELECT 'Pantano',                         0,            NULL,        NULL,        'Tierra básica. Tap: añade un maná negro.',                                     'Común',       FALSE,            'Tierra',       NULL,               'Dominaria United'       UNION ALL
+      SELECT 'Montaña',                         0,            NULL,        NULL,        'Tierra básica. Tap: añade un maná rojo.',                                      'Común',       FALSE,            'Tierra',       NULL,               'Dominaria United'       UNION ALL
+      SELECT 'Bosque',                          0,            NULL,        NULL,        'Tierra básica. Tap: añade un maná verde.',                                     'Común',       FALSE,            'Tierra',       NULL,               'Dominaria United'       UNION ALL
+      SELECT 'Roost of Drakes',                 1,            NULL,        NULL,        'Cada vez que lances un hechizo azul, crea una ficha Drake 2/2.',              'Infrecuente', FALSE,            'Encantamiento',NULL,               'Wilds of Eldraine'      UNION ALL
+      SELECT 'Propaganda',                      3,            NULL,        NULL,        'Los oponentes pagan 2 por cada criatura que ataque.',                          'Infrecuente', FALSE,            'Encantamiento',NULL,               'March of the Machine'   UNION ALL
+      SELECT 'Wilderness Reclamation',          4,            NULL,        NULL,        'Al final de cada turno, desactiva todas tus tierras.',                         'Infrecuente', FALSE,            'Encantamiento',NULL,               'Wilds of Eldraine'      UNION ALL
+      SELECT 'Sol Ring',                        1,            NULL,        NULL,        'Tap: añade dos manás incoloros.',                                              'Infrecuente', FALSE,            'Artefacto',    NULL,               'The Brothers War'       UNION ALL
+      SELECT 'Sword of Fire and Ice',           3,            NULL,        NULL,        'Equipar 2. +2/+2. Protección de rojo y azul.',                                'Mítica',      FALSE,            'Artefacto',    NULL,               'The Brothers War'
+     ) t;
 
 -- -------------------------------------------------------
--- Colores de las cartas
--- (1=Blanco 2=Azul 3=Negro 4=Rojo 5=Verde 6=Incoloro)
+-- Colores de las cartas (por nombre, sin asumir IDs)
 -- -------------------------------------------------------
-INSERT INTO carta_color (id_carta, id_color) VALUES
-    (1,  1), -- Serra Angel          → Blanco
-    (2,  5), -- Llanowar Elves       → Verde
-    (3,  4), -- Shivan Dragon        → Rojo
-    (4,  2), -- Arcanis              → Azul
-    (5,  5), -- Tarmogoyf            → Verde
-    (5,  3), -- Tarmogoyf            → Negro (multicolor)
-    (6,  1), -- Skrelv               → Blanco
-    (7,  5), -- Restless Cottage     → Verde (tierra criatura)
-    (8,  2), -- Roost of Drakes      → Azul
-    (9,  3), -- Sentinel             → Negro
-    (10, 1), -- Abuelo               → Blanco
-    (10, 3), -- Abuelo               → Negro
-    (11, 4), -- Lightning Bolt       → Rojo
-    (12, 2), -- Counterspell         → Azul
-    (13, 3), -- Dark Ritual          → Negro
-    (14, 1), -- Wrath of God         → Blanco
-    (15, 5), -- Naturalize           → Verde
-    (16, 1), -- Pradera              → Blanco
-    (17, 2), -- Isla                 → Azul
-    (18, 3), -- Pantano              → Negro
-    (19, 4), -- Montaña              → Rojo
-    (20, 5), -- Bosque               → Verde
-    (21, 6), -- Sol Ring             → Incoloro
-    (22, 4), -- Sword of Fire        → Rojo
-    (22, 2), -- Sword of Fire        → Azul
-    (23, 2), -- Propaganda           → Azul
-    (24, 6), -- Crucible of Worlds   → Incoloro
-    (25, 5); -- Wilderness Rec.      → Verde
+INSERT INTO carta_color (id_carta, id_color)
+SELECT c.id_carta, col.id_color FROM carta c JOIN color col ON 1=1
+WHERE (c.nombre, col.nombre) IN (
+    ('Serra Angel',              'Blanco'),
+    ('Llanowar Elves',           'Verde'),
+    ('Shivan Dragon',            'Rojo'),
+    ('Arcanis the Omnipotent',   'Azul'),
+    ('Tarmogoyf',                'Verde'),
+    ('Tarmogoyf',                'Negro'),
+    ('Skrelv, Defector Mite',    'Blanco'),
+    ('Restless Cottage',         'Verde'),
+    ('Sentinel of Lost Lore',    'Negro'),
+    ('Abuelo, Ancestry''s Echo', 'Blanco'),
+    ('Abuelo, Ancestry''s Echo', 'Negro'),
+    ('Goblin Guide',             'Rojo'),
+    ('Birds of Paradise',        'Verde'),
+    ('Snapcaster Mage',          'Azul'),
+    ('Lightning Bolt',           'Rojo'),
+    ('Counterspell',             'Azul'),
+    ('Dark Ritual',              'Negro'),
+    ('Path to Exile',            'Blanco'),
+    ('Naturalize',               'Verde'),
+    ('Wrath of God',             'Blanco'),
+    ('Thoughtseize',             'Negro'),
+    ('Demonic Tutor',            'Negro'),
+    ('Llano de la Pradera',      'Blanco'),
+    ('Isla',                     'Azul'),
+    ('Pantano',                  'Negro'),
+    ('Montaña',                  'Rojo'),
+    ('Bosque',                   'Verde'),
+    ('Roost of Drakes',          'Azul'),
+    ('Propaganda',               'Azul'),
+    ('Wilderness Reclamation',   'Verde'),
+    ('Sol Ring',                 'Incoloro'),
+    ('Sword of Fire and Ice',    'Rojo'),
+    ('Sword of Fire and Ice',    'Azul')
+);
 
 -- -------------------------------------------------------
 -- Jugadores
@@ -117,60 +145,74 @@ INSERT INTO jugador (nombre, email, fecha_registro) VALUES
 -- -------------------------------------------------------
 -- Mazos
 -- -------------------------------------------------------
-INSERT INTO mazo (nombre, id_jugador) VALUES
-    ('Agresión Roja',       1),
-    ('Control Azul',        2),
-    ('Elfos del Bosque',    3),
-    ('Ángeles Divinos',     4),
-    ('Artefactos Oscuros',  5),
-    ('Midrange Verde-Negro',1);
+INSERT INTO mazo (nombre, id_jugador)
+SELECT t.nombre, (SELECT id_jugador FROM jugador WHERE nombre = t.jugador)
+FROM (SELECT 'Agresión Roja'        nombre, 'Alejandro Vega'  jugador UNION ALL
+      SELECT 'Control Azul',                'María Soto'               UNION ALL
+      SELECT 'Elfos del Bosque',            'Carlos Ruiz'              UNION ALL
+      SELECT 'Ángeles Divinos',             'Laura Méndez'             UNION ALL
+      SELECT 'Artefactos Oscuros',          'Diego Fernández'          UNION ALL
+      SELECT 'Midrange Verde-Negro',        'Alejandro Vega'
+     ) t;
 
 -- -------------------------------------------------------
--- Cartas en los mazos
+-- Cartas en los mazos (por nombre, sin asumir IDs)
 -- -------------------------------------------------------
-INSERT INTO carta_mazo (id_mazo, id_carta, cantidad) VALUES
-    -- Mazo 1: Agresión Roja
-    (1, 11, 4), -- Lightning Bolt x4
-    (1, 3,  2), -- Shivan Dragon x2
-    (1, 19, 12),-- Montaña x12
-    -- Mazo 2: Control Azul
-    (2, 12, 4), -- Counterspell x4
-    (2, 4,  2), -- Arcanis x2
-    (2, 8,  3), -- Roost of Drakes x3
-    (2, 23, 2), -- Propaganda x2
-    (2, 17, 12),-- Isla x12
-    -- Mazo 3: Elfos del Bosque
-    (3, 2,  4), -- Llanowar Elves x4
-    (3, 5,  2), -- Tarmogoyf x2
-    (3, 15, 3), -- Naturalize x3
-    (3, 20, 12),-- Bosque x12
-    -- Mazo 4: Ángeles Divinos
-    (4, 1,  4), -- Serra Angel x4
-    (4, 14, 2), -- Wrath of God x2
-    (4, 6,  2), -- Skrelv x2
-    (4, 16, 12),-- Pradera x12
-    -- Mazo 5: Artefactos Oscuros
-    (5, 21, 4), -- Sol Ring x4
-    (5, 22, 2), -- Sword of Fire and Ice x2
-    (5, 24, 2), -- Crucible of Worlds x2
-    (5, 13, 4), -- Dark Ritual x4
-    (5, 18, 10),-- Pantano x10
-    -- Mazo 6: Midrange Verde-Negro
-    (6, 2,  3), -- Llanowar Elves x3
-    (6, 5,  4), -- Tarmogoyf x4
-    (6, 13, 3), -- Dark Ritual x3
-    (6, 20, 8), -- Bosque x8
-    (6, 18, 8); -- Pantano x8
+INSERT INTO carta_mazo (id_mazo, id_carta, cantidad)
+SELECT m.id_mazo, c.id_carta, t.cantidad
+FROM (SELECT 'Agresión Roja'        mazo, 'Lightning Bolt'          carta, 4 cantidad UNION ALL
+      SELECT 'Agresión Roja',              'Shivan Dragon',                 2          UNION ALL
+      SELECT 'Agresión Roja',              'Goblin Guide',                  4          UNION ALL
+      SELECT 'Agresión Roja',              'Montaña',                       12         UNION ALL
+      SELECT 'Control Azul',              'Counterspell',                  4          UNION ALL
+      SELECT 'Control Azul',              'Arcanis the Omnipotent',        2          UNION ALL
+      SELECT 'Control Azul',              'Roost of Drakes',               3          UNION ALL
+      SELECT 'Control Azul',              'Propaganda',                    2          UNION ALL
+      SELECT 'Control Azul',              'Snapcaster Mage',               3          UNION ALL
+      SELECT 'Control Azul',              'Isla',                          12         UNION ALL
+      SELECT 'Elfos del Bosque',          'Llanowar Elves',                4          UNION ALL
+      SELECT 'Elfos del Bosque',          'Tarmogoyf',                     2          UNION ALL
+      SELECT 'Elfos del Bosque',          'Birds of Paradise',             4          UNION ALL
+      SELECT 'Elfos del Bosque',          'Naturalize',                    3          UNION ALL
+      SELECT 'Elfos del Bosque',          'Bosque',                        12         UNION ALL
+      SELECT 'Ángeles Divinos',           'Serra Angel',                   4          UNION ALL
+      SELECT 'Ángeles Divinos',           'Wrath of God',                  2          UNION ALL
+      SELECT 'Ángeles Divinos',           'Path to Exile',                 4          UNION ALL
+      SELECT 'Ángeles Divinos',           'Skrelv, Defector Mite',         2          UNION ALL
+      SELECT 'Ángeles Divinos',           'Llano de la Pradera',           12         UNION ALL
+      SELECT 'Artefactos Oscuros',        'Sol Ring',                      4          UNION ALL
+      SELECT 'Artefactos Oscuros',        'Sword of Fire and Ice',         2          UNION ALL
+      SELECT 'Artefactos Oscuros',        'Dark Ritual',                   4          UNION ALL
+      SELECT 'Artefactos Oscuros',        'Demonic Tutor',                 2          UNION ALL
+      SELECT 'Artefactos Oscuros',        'Pantano',                       10         UNION ALL
+      SELECT 'Midrange Verde-Negro',      'Llanowar Elves',                3          UNION ALL
+      SELECT 'Midrange Verde-Negro',      'Tarmogoyf',                     4          UNION ALL
+      SELECT 'Midrange Verde-Negro',      'Thoughtseize',                  4          UNION ALL
+      SELECT 'Midrange Verde-Negro',      'Bosque',                        8          UNION ALL
+      SELECT 'Midrange Verde-Negro',      'Pantano',                       8
+     ) t
+JOIN mazo  m ON m.nombre = t.mazo
+JOIN carta c ON c.nombre = t.carta;
 
 -- -------------------------------------------------------
--- Partidas
+-- Partidas (por nombre de jugador)
 -- -------------------------------------------------------
-INSERT INTO partida (fecha, id_jugador1, id_jugador2, id_ganador) VALUES
-    ('2024-06-01 18:00:00', 1, 2, 1),
-    ('2024-06-05 19:30:00', 3, 4, 4),
-    ('2024-06-10 17:00:00', 2, 5, 2),
-    ('2024-06-12 20:00:00', 1, 3, 3),
-    ('2024-06-15 18:45:00', 4, 5, 4),
-    ('2024-06-20 16:00:00', 2, 3, 2),
-    ('2024-06-22 21:00:00', 1, 5, 1),
-    ('2024-06-25 18:00:00', 3, 5, NULL); -- partida en curso, sin ganador
+INSERT INTO partida (fecha, id_jugador1, id_jugador2, id_ganador)
+SELECT t.fecha,
+       (SELECT id_jugador FROM jugador WHERE nombre = t.j1),
+       (SELECT id_jugador FROM jugador WHERE nombre = t.j2),
+       (SELECT id_jugador FROM jugador WHERE nombre = t.ganador)
+FROM (SELECT '2024-06-01 18:00:00' fecha, 'Alejandro Vega' j1, 'María Soto'      j2, 'Alejandro Vega' ganador UNION ALL
+      SELECT '2024-06-05 19:30:00',       'Carlos Ruiz',       'Laura Méndez',       'Laura Méndez'           UNION ALL
+      SELECT '2024-06-10 17:00:00',       'María Soto',        'Diego Fernández',    'María Soto'             UNION ALL
+      SELECT '2024-06-12 20:00:00',       'Alejandro Vega',    'Carlos Ruiz',        'Carlos Ruiz'            UNION ALL
+      SELECT '2024-06-15 18:45:00',       'Laura Méndez',      'Diego Fernández',    'Laura Méndez'           UNION ALL
+      SELECT '2024-06-20 16:00:00',       'María Soto',        'Carlos Ruiz',        'María Soto'             UNION ALL
+      SELECT '2024-06-22 21:00:00',       'Alejandro Vega',    'Diego Fernández',    'Alejandro Vega'
+     ) t
+UNION ALL
+-- Partida en curso sin ganador
+SELECT '2024-06-25 18:00:00',
+       (SELECT id_jugador FROM jugador WHERE nombre = 'Carlos Ruiz'),
+       (SELECT id_jugador FROM jugador WHERE nombre = 'Diego Fernández'),
+       NULL;
