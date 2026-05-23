@@ -1,0 +1,87 @@
+package view;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class MainFrame extends JFrame {
+
+    private JPanel panelContenido;
+    private CardLayout cardLayout;
+
+    private CartaView cartaView;
+    private JugadorView jugadorView;
+    private MazoView mazoView;
+    private PartidaView partidaView;
+
+    public MainFrame() {
+        setTitle("Magic Cards DAM");
+        setSize(900, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        cartaView = new CartaView();
+        jugadorView = new JugadorView();
+        mazoView = new MazoView();
+        partidaView = new PartidaView();
+
+        cardLayout = new CardLayout();
+        panelContenido = new JPanel(cardLayout);
+        panelContenido.add(cartaView, "cartas");
+        panelContenido.add(jugadorView, "jugadores");
+        panelContenido.add(mazoView, "mazos");
+        panelContenido.add(partidaView, "partidas");
+
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu menuGestion = new JMenu("Gestión");
+        JMenuItem itemCartas = new JMenuItem("Cartas");
+        JMenuItem itemJugadores = new JMenuItem("Jugadores");
+        JMenuItem itemMazos = new JMenuItem("Mazos");
+        JMenuItem itemPartidas = new JMenuItem("Partidas");
+
+        itemCartas.addActionListener(e -> {
+            cardLayout.show(panelContenido, "cartas");
+            cartaView.cargarTabla();
+        });
+        itemJugadores.addActionListener(e -> {
+            cardLayout.show(panelContenido, "jugadores");
+            jugadorView.cargarTabla();
+        });
+        itemMazos.addActionListener(e -> {
+            cardLayout.show(panelContenido, "mazos");
+            mazoView.cargarTabla();
+        });
+        itemPartidas.addActionListener(e -> {
+            cardLayout.show(panelContenido, "partidas");
+            partidaView.cargarTabla();
+        });
+
+        menuGestion.add(itemCartas);
+        menuGestion.add(itemJugadores);
+        menuGestion.add(itemMazos);
+        menuGestion.add(itemPartidas);
+        menuBar.add(menuGestion);
+
+        JMenu menuAyuda = new JMenu("Ayuda");
+        JMenuItem itemAcerca = new JMenuItem("Acerca de");
+        itemAcerca.addActionListener(e ->
+            JOptionPane.showMessageDialog(this,
+                "Magic Cards DAM\nPráctica Final - Programación y Bases de Datos",
+                "Acerca de", JOptionPane.INFORMATION_MESSAGE));
+        menuAyuda.add(itemAcerca);
+        menuBar.add(menuAyuda);
+
+        setJMenuBar(menuBar);
+        add(panelContenido);
+
+        cardLayout.show(panelContenido, "cartas");
+        cartaView.cargarTabla();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            MainFrame frame = new MainFrame();
+            frame.setVisible(true);
+        });
+    }
+}
