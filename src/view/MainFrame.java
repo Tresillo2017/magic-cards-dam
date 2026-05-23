@@ -92,7 +92,7 @@ public class MainFrame extends JFrame {
         itemAcerca.addActionListener(e -> {
             JPanel panel = new JPanel();
             panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-            panel.add(new JLabel("Magic Cards DAM"));
+            panel.add(new JLabel("Magic Cards DAM  v1.1.0"));
             panel.add(new JLabel("Práctica Final — Programación y Bases de Datos"));
             panel.add(Box.createVerticalStrut(8));
             JLabel linkLabel = new JLabel("<html><a href=''>https://github.com/Tresillo2017/magic-cards-dam</a></html>");
