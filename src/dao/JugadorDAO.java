@@ -20,7 +20,7 @@ public class JugadorDAO {
     }
 
     /** Inserta un jugador y actualiza su {@code idJugador} con la clave generada. */
-    public void insertar(Jugador j) {
+    public boolean insertar(Jugador j) {
         String sql = "INSERT INTO jugador (nombre, email, fecha_registro) VALUES (?, ?, ?)";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -34,8 +34,10 @@ public class JugadorDAO {
             }
             rs.close();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -89,21 +91,6 @@ public class JugadorDAO {
         return lista;
     }
 
-    /** Actualiza nombre y email del jugador. */
-    public void actualizar(Jugador j) {
-        String sql = "UPDATE jugador SET nombre = ?, email = ? WHERE id_jugador = ?";
-        try {
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ps.setString(1, j.getNombre());
-            ps.setString(2, j.getEmail());
-            ps.setInt(3, j.getIdJugador());
-            ps.executeUpdate();
-            ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     /** Devuelve todos los jugadores incluyendo el número de mazos que posee cada uno. */
     public List<Jugador> listarTodosConMazos() {
         List<Jugador> lista = new ArrayList<>();
@@ -130,19 +117,38 @@ public class JugadorDAO {
         return lista;
     }
 
+    /** Actualiza nombre y email del jugador. */
+    public boolean actualizar(Jugador j) {
+        String sql = "UPDATE jugador SET nombre = ?, email = ? WHERE id_jugador = ?";
+        try {
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ps.setString(1, j.getNombre());
+            ps.setString(2, j.getEmail());
+            ps.setInt(3, j.getIdJugador());
+            ps.executeUpdate();
+            ps.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     /**
      * Elimina el jugador con el ID indicado.
      * @param id identificador del jugador
      */
-    public void eliminar(int id) {
+    public boolean eliminar(int id) {
         String sql = "DELETE FROM jugador WHERE id_jugador = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setInt(1, id);
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

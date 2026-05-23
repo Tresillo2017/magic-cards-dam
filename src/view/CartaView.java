@@ -218,13 +218,16 @@ public class CartaView extends JPanel {
         if (tipoSec != null && tipoSec.getIdTipo() != -1) c.setTipoSecundario(tipoSec);
         c.setEdicion((Edicion) cboEdicion.getSelectedItem());
 
+        boolean ok;
         if (idCartaSeleccionada == -1) {
-            cartaDAO.insertar(c);
-            JOptionPane.showMessageDialog(this, "Carta añadida correctamente.");
+            ok = cartaDAO.insertar(c);
+            if (ok) JOptionPane.showMessageDialog(this, "Carta añadida correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al añadir la carta.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             c.setIdCarta(idCartaSeleccionada);
-            cartaDAO.actualizar(c);
-            JOptionPane.showMessageDialog(this, "Carta actualizada correctamente.");
+            ok = cartaDAO.actualizar(c);
+            if (ok) JOptionPane.showMessageDialog(this, "Carta actualizada correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al actualizar la carta.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         limpiarFormulario();
         cargarTabla();
@@ -238,8 +241,9 @@ public class CartaView extends JPanel {
         int opcion = JOptionPane.showConfirmDialog(this,
                 "¿Seguro que quieres eliminar esta carta?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (opcion == JOptionPane.YES_OPTION) {
-            cartaDAO.eliminar(idCartaSeleccionada);
-            JOptionPane.showMessageDialog(this, "Carta eliminada.");
+            boolean ok = cartaDAO.eliminar(idCartaSeleccionada);
+            if (ok) JOptionPane.showMessageDialog(this, "Carta eliminada.");
+            else JOptionPane.showMessageDialog(this, "Error al eliminar la carta.\nPuede estar en uso en algún mazo.", "Error", JOptionPane.ERROR_MESSAGE);
             limpiarFormulario();
             cargarTabla();
         }

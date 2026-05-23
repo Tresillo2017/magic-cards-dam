@@ -21,7 +21,7 @@ public class PartidaDAO {
     }
 
     /** Inserta una nueva partida con la fecha actual y actualiza su {@code idPartida}. */
-    public void insertar(Partida p) {
+    public boolean insertar(Partida p) {
         String sql = "INSERT INTO partida (fecha, id_jugador1, id_jugador2, id_ganador) VALUES (NOW(), ?, ?, ?)";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -36,8 +36,10 @@ public class PartidaDAO {
             }
             rs.close();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -183,7 +185,7 @@ public class PartidaDAO {
      * @param idPartida  identificador de la partida
      * @param idGanador  identificador del jugador ganador
      */
-    public void registrarGanador(int idPartida, int idGanador) {
+    public boolean registrarGanador(int idPartida, int idGanador) {
         String sql = "UPDATE partida SET id_ganador = ? WHERE id_partida = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
@@ -191,8 +193,10 @@ public class PartidaDAO {
             ps.setInt(2, idPartida);
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -200,27 +204,31 @@ public class PartidaDAO {
      * Pone el ganador de una partida a NULL (marca la partida como "en curso").
      * @param idPartida identificador de la partida
      */
-    public void quitarGanador(int idPartida) {
+    public boolean quitarGanador(int idPartida) {
         String sql = "UPDATE partida SET id_ganador = NULL WHERE id_partida = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setInt(1, idPartida);
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
-    public void eliminar(int id) {
+    public boolean eliminar(int id) {
         String sql = "DELETE FROM partida WHERE id_partida = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setInt(1, id);
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

@@ -1,5 +1,7 @@
 package view;
 
+import util.ConexionDB;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -112,6 +114,16 @@ public class MainFrame extends JFrame {
             // Si Nimbus no está disponible, se usa el L&F por defecto
         }
         SwingUtilities.invokeLater(() -> {
+            ConexionDB db = ConexionDB.getInstancia();
+            if (!db.isConectado()) {
+                JOptionPane.showMessageDialog(null,
+                    "No se pudo conectar a la base de datos.\n\n" +
+                    "Comprueba que MySQL está en ejecución y que\n" +
+                    "las credenciales en db.properties son correctas.\n\n" +
+                    "Error: " + db.getErrorConexion(),
+                    "Error de conexión", JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+            }
             MainFrame frame = new MainFrame();
             frame.setVisible(true);
         });

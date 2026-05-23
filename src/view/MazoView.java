@@ -187,13 +187,16 @@ public class MazoView extends JPanel {
         Mazo m = new Mazo();
         m.setNombre(txtNombreMazo.getText().trim());
         m.setJugador((Jugador) cboJugador.getSelectedItem());
+        boolean ok;
         if (idMazoSeleccionado == -1) {
-            mazoDAO.insertar(m);
-            JOptionPane.showMessageDialog(this, "Mazo creado correctamente.");
+            ok = mazoDAO.insertar(m);
+            if (ok) JOptionPane.showMessageDialog(this, "Mazo creado correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al crear el mazo.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             m.setIdMazo(idMazoSeleccionado);
-            mazoDAO.actualizar(m);
-            JOptionPane.showMessageDialog(this, "Mazo actualizado correctamente.");
+            ok = mazoDAO.actualizar(m);
+            if (ok) JOptionPane.showMessageDialog(this, "Mazo actualizado correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al actualizar el mazo.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         limpiarFormulario();
         cargarTabla();
@@ -208,8 +211,9 @@ public class MazoView extends JPanel {
                 "¿Seguro que quieres eliminar este mazo y todas sus cartas?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (opcion == JOptionPane.YES_OPTION) {
             cartaMazoDAO.eliminarPorMazo(idMazoSeleccionado);
-            mazoDAO.eliminar(idMazoSeleccionado);
-            JOptionPane.showMessageDialog(this, "Mazo eliminado.");
+            boolean ok = mazoDAO.eliminar(idMazoSeleccionado);
+            if (ok) JOptionPane.showMessageDialog(this, "Mazo eliminado.");
+            else JOptionPane.showMessageDialog(this, "Error al eliminar el mazo.", "Error", JOptionPane.ERROR_MESSAGE);
             limpiarFormulario();
             cargarTabla();
         }
@@ -253,7 +257,10 @@ public class MazoView extends JPanel {
             cm.setMazo(mazo);
             cm.setCarta(carta);
             cm.setCantidad(cantidad);
-            cartaMazoDAO.insertar(cm);
+            boolean ok = cartaMazoDAO.insertar(cm);
+            if (!ok) {
+                JOptionPane.showMessageDialog(this, "Error al añadir la carta al mazo.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
         cargarCartasMazo();
     }

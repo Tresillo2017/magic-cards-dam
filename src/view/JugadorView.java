@@ -116,13 +116,16 @@ public class JugadorView extends JPanel {
         j.setNombre(txtNombre.getText().trim());
         j.setEmail(txtEmail.getText().trim());
 
+        boolean ok;
         if (idJugadorSeleccionado == -1) {
-            jugadorDAO.insertar(j);
-            JOptionPane.showMessageDialog(this, "Jugador añadido correctamente.");
+            ok = jugadorDAO.insertar(j);
+            if (ok) JOptionPane.showMessageDialog(this, "Jugador añadido correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al añadir el jugador.\nEl email puede estar duplicado.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             j.setIdJugador(idJugadorSeleccionado);
-            jugadorDAO.actualizar(j);
-            JOptionPane.showMessageDialog(this, "Jugador actualizado correctamente.");
+            ok = jugadorDAO.actualizar(j);
+            if (ok) JOptionPane.showMessageDialog(this, "Jugador actualizado correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al actualizar el jugador.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         limpiarFormulario();
         cargarTabla();
@@ -136,8 +139,9 @@ public class JugadorView extends JPanel {
         int opcion = JOptionPane.showConfirmDialog(this,
                 "¿Seguro que quieres eliminar este jugador?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (opcion == JOptionPane.YES_OPTION) {
-            jugadorDAO.eliminar(idJugadorSeleccionado);
-            JOptionPane.showMessageDialog(this, "Jugador eliminado.");
+            boolean ok = jugadorDAO.eliminar(idJugadorSeleccionado);
+            if (ok) JOptionPane.showMessageDialog(this, "Jugador eliminado.");
+            else JOptionPane.showMessageDialog(this, "Error al eliminar el jugador.", "Error", JOptionPane.ERROR_MESSAGE);
             limpiarFormulario();
             cargarTabla();
         }

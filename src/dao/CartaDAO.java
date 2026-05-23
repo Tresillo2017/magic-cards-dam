@@ -20,7 +20,7 @@ public class CartaDAO {
     }
 
     /** Inserta una nueva carta y actualiza su {@code idCarta} con la clave generada. */
-    public void insertar(Carta c) {
+    public boolean insertar(Carta c) {
         String sql = "INSERT INTO carta (nombre, coste_mana, fuerza, resistencia, texto_habilidad, " +
                      "rareza, legendario, id_tipo_carta, id_tipo_secundario, id_edicion) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -46,8 +46,10 @@ public class CartaDAO {
             }
             rs.close();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -196,7 +198,7 @@ public class CartaDAO {
     }
 
     /** Actualiza todos los campos de la carta en la base de datos. */
-    public void actualizar(Carta c) {
+    public boolean actualizar(Carta c) {
         String sql = "UPDATE carta SET nombre = ?, coste_mana = ?, fuerza = ?, resistencia = ?, " +
                      "texto_habilidad = ?, rareza = ?, legendario = ?, " +
                      "id_tipo_carta = ?, id_tipo_secundario = ?, id_edicion = ? WHERE id_carta = ?";
@@ -218,8 +220,10 @@ public class CartaDAO {
             ps.setInt(11, c.getIdCarta());
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -227,15 +231,17 @@ public class CartaDAO {
      * Elimina la carta con el ID indicado.
      * @param id identificador de la carta a eliminar
      */
-    public void eliminar(int id) {
+    public boolean eliminar(int id) {
         String sql = "DELETE FROM carta WHERE id_carta = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setInt(1, id);
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 

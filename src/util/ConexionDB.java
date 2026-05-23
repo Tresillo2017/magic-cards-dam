@@ -16,11 +16,13 @@ public class ConexionDB {
 
     private static ConexionDB instancia = null;
     private Connection conexion;
+    private String errorConexion = null;
 
     private ConexionDB() {
         try {
             conexion = DriverManager.getConnection(URL, USUARIO, CONTRASENA);
         } catch (SQLException e) {
+            errorConexion = e.getMessage();
             e.printStackTrace();
         }
     }
@@ -34,6 +36,22 @@ public class ConexionDB {
             instancia = new ConexionDB();
         }
         return instancia;
+    }
+
+    /**
+     * Indica si la conexión se estableció correctamente.
+     * @return true si hay conexión activa
+     */
+    public boolean isConectado() {
+        return conexion != null;
+    }
+
+    /**
+     * Devuelve el mensaje de error de conexión, o null si no hubo error.
+     * @return mensaje de error o null
+     */
+    public String getErrorConexion() {
+        return errorConexion;
     }
 
     /**

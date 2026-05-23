@@ -21,7 +21,7 @@ public class MazoDAO {
     }
 
     /** Inserta un mazo y actualiza su {@code idMazo} con la clave generada. */
-    public void insertar(Mazo m) {
+    public boolean insertar(Mazo m) {
         String sql = "INSERT INTO mazo (nombre, id_jugador) VALUES (?, ?)";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -34,8 +34,10 @@ public class MazoDAO {
             }
             rs.close();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -137,7 +139,7 @@ public class MazoDAO {
         return lista;
     }
 
-    public void actualizar(Mazo m) {
+    public boolean actualizar(Mazo m) {
         String sql = "UPDATE mazo SET nombre = ?, id_jugador = ? WHERE id_mazo = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
@@ -146,20 +148,24 @@ public class MazoDAO {
             ps.setInt(3, m.getIdMazo());
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
-    public void eliminar(int id) {
+    public boolean eliminar(int id) {
         String sql = "DELETE FROM mazo WHERE id_mazo = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setInt(1, id);
             ps.executeUpdate();
             ps.close();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

@@ -126,20 +126,23 @@ public class PartidaView extends JPanel {
         Jugador ganador = (Jugador) cboGanador.getSelectedItem();
         boolean sinGanador = ganador == null || ganador.getIdJugador() == -1;
 
+        boolean ok;
         if (idPartidaSeleccionada == -1) {
             Partida p = new Partida();
             p.setJugador1(j1);
             p.setJugador2(j2);
             if (!sinGanador) p.setGanador(ganador);
-            partidaDAO.insertar(p);
-            JOptionPane.showMessageDialog(this, "Partida registrada correctamente.");
+            ok = partidaDAO.insertar(p);
+            if (ok) JOptionPane.showMessageDialog(this, "Partida registrada correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al registrar la partida.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             if (sinGanador) {
-                partidaDAO.quitarGanador(idPartidaSeleccionada);
+                ok = partidaDAO.quitarGanador(idPartidaSeleccionada);
             } else {
-                partidaDAO.registrarGanador(idPartidaSeleccionada, ganador.getIdJugador());
+                ok = partidaDAO.registrarGanador(idPartidaSeleccionada, ganador.getIdJugador());
             }
-            JOptionPane.showMessageDialog(this, "Partida actualizada correctamente.");
+            if (ok) JOptionPane.showMessageDialog(this, "Partida actualizada correctamente.");
+            else JOptionPane.showMessageDialog(this, "Error al actualizar la partida.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         limpiarFormulario();
         cargarTabla();
@@ -153,8 +156,9 @@ public class PartidaView extends JPanel {
         int opcion = JOptionPane.showConfirmDialog(this,
                 "¿Seguro que quieres eliminar esta partida?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (opcion == JOptionPane.YES_OPTION) {
-            partidaDAO.eliminar(idPartidaSeleccionada);
-            JOptionPane.showMessageDialog(this, "Partida eliminada.");
+            boolean ok = partidaDAO.eliminar(idPartidaSeleccionada);
+            if (ok) JOptionPane.showMessageDialog(this, "Partida eliminada.");
+            else JOptionPane.showMessageDialog(this, "Error al eliminar la partida.", "Error", JOptionPane.ERROR_MESSAGE);
             limpiarFormulario();
             cargarTabla();
         }
