@@ -99,16 +99,15 @@ public class MazoView extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(6, 6, 6, 6);
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill   = GridBagConstraints.HORIZONTAL;
 
         txtNombreMazo = new JTextField(15);
         cboJugador    = new JComboBox<>();
 
-        gbc.gridx = 0; gbc.gridy = 0; panelForm.add(new JLabel("Nombre:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtNombreMazo, gbc);
+        gbc.gridx = 0; gbc.gridy = 0; gbc.fill = GridBagConstraints.NONE;       gbc.weightx = 0; panelForm.add(new JLabel("Nombre:"), gbc);
+        gbc.gridx = 1;                gbc.fill = GridBagConstraints.HORIZONTAL;  gbc.weightx = 1; panelForm.add(txtNombreMazo, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 1; panelForm.add(new JLabel("Jugador:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboJugador, gbc);
+        gbc.gridx = 0; gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE;       gbc.weightx = 0; panelForm.add(new JLabel("Jugador:"), gbc);
+        gbc.gridx = 1;                gbc.fill = GridBagConstraints.HORIZONTAL;  gbc.weightx = 1; panelForm.add(cboJugador, gbc);
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
         btnNuevo    = new JButton("Nuevo");

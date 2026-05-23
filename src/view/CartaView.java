@@ -70,7 +70,6 @@ public class CartaView extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(4, 4, 4, 4);
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         txtNombre = new JTextField(18);
         txtCosteMana = new JTextField(5);
@@ -85,34 +84,34 @@ public class CartaView extends JPanel {
         cboEdicion = new JComboBox<>();
 
         int fila = 0;
-        gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Nombre:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtNombre, gbc);
+        gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Nombre:"), gbc);
+        gbc.gridx = 1;                   gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(txtNombre, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Coste maná:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtCosteMana, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Coste maná:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(txtCosteMana, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Fuerza:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtFuerza, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Fuerza:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(txtFuerza, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Resistencia:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtResistencia, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Resistencia:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(txtResistencia, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Rareza:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboRareza, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Rareza:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(cboRareza, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Tipo:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboTipo, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Tipo:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(cboTipo, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Tipo secundario:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboTipoSec, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Tipo secundario:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(cboTipoSec, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Edición:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboEdicion, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Edición:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(cboEdicion, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Habilidad:"), gbc);
-        gbc.gridx = 1; panelForm.add(new JScrollPane(txtTextoHabilidad), gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;      gbc.weightx = 0; panelForm.add(new JLabel("Habilidad:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(new JScrollPane(txtTextoHabilidad), gbc);
 
-        fila++; gbc.gridx = 1; gbc.gridy = fila; panelForm.add(chkLegendario, gbc);
+        fila++; gbc.gridx = 1; gbc.gridy = fila;  gbc.fill = GridBagConstraints.NONE; gbc.weightx = 1; panelForm.add(chkLegendario, gbc);
 
         // Botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));

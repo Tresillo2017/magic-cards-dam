@@ -51,21 +51,20 @@ public class JugadorView extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(6, 6, 6, 6);
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         txtNombre = new JTextField(18);
         txtEmail  = new JTextField(18);
         lblFechaRegistro = new JLabel("-");
 
         int fila = 0;
-        gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Nombre:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtNombre, gbc);
+        gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;   gbc.weightx = 0; panelForm.add(new JLabel("Nombre:"), gbc);
+        gbc.gridx = 1;                   gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(txtNombre, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Email:"), gbc);
-        gbc.gridx = 1; panelForm.add(txtEmail, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;   gbc.weightx = 0; panelForm.add(new JLabel("Email:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(txtEmail, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Fecha registro:"), gbc);
-        gbc.gridx = 1; panelForm.add(lblFechaRegistro, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;   gbc.weightx = 0; panelForm.add(new JLabel("Fecha registro:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1; panelForm.add(lblFechaRegistro, gbc);
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
         btnNuevo    = new JButton("Nuevo");

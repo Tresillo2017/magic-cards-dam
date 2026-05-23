@@ -54,21 +54,20 @@ public class PartidaView extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(6, 6, 6, 6);
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         cboJugador1 = new JComboBox<>();
         cboJugador2 = new JComboBox<>();
         cboGanador  = new JComboBox<>();
 
         int fila = 0;
-        gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Jugador 1:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboJugador1, gbc);
+        gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;       gbc.weightx = 0; panelForm.add(new JLabel("Jugador 1:"), gbc);
+        gbc.gridx = 1;                   gbc.fill = GridBagConstraints.HORIZONTAL;  gbc.weightx = 1; panelForm.add(cboJugador1, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Jugador 2:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboJugador2, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;       gbc.weightx = 0; panelForm.add(new JLabel("Jugador 2:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL;  gbc.weightx = 1; panelForm.add(cboJugador2, gbc);
 
-        fila++; gbc.gridx = 0; gbc.gridy = fila; panelForm.add(new JLabel("Ganador:"), gbc);
-        gbc.gridx = 1; panelForm.add(cboGanador, gbc);
+        fila++; gbc.gridx = 0; gbc.gridy = fila; gbc.fill = GridBagConstraints.NONE;       gbc.weightx = 0; panelForm.add(new JLabel("Ganador:"), gbc);
+        gbc.gridx = 1;                            gbc.fill = GridBagConstraints.HORIZONTAL;  gbc.weightx = 1; panelForm.add(cboGanador, gbc);
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
         btnNueva    = new JButton("Nueva");
